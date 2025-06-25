@@ -1,0 +1,2 @@
+# vitrinim
+ilan platformu
