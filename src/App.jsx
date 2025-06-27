@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import { Alert, TextInput, TouchableOpacity, Text, View } from 'react-native';
 import emailjs from 'emailjs-com';
 
 const [couponCodes, setCouponCodes] = useState([]);
@@ -31,7 +33,7 @@ useEffect(() => {
       );
       if (matching) {
         const msg = `Kategori: ${alert.category} için '${alert.keyword}' eşleşen ilan bulundu.`;
-        Alert.alert("Yeni İlan Uyarısı", msg);
+       window.alert(...)("Yeni İlan Uyarısı", msg);
         setEmailNotifications(prev => [...prev, { to: userEmail, message: msg }]);
         sendEmailNotification(userEmail, msg);
       }
@@ -56,9 +58,9 @@ const addAlert = () => {
   if (newAlert.keyword && newAlert.category) {
     setAlerts([...alerts, newAlert]);
     setNewAlert({ keyword: "", category: "" });
-    Alert.alert("Alarm Eklendi", "Yeni arama alarmı başarıyla tanımlandı.");
+   window.alert(...)("Alarm Eklendi", "Yeni arama alarmı başarıyla tanımlandı.");
   } else {
-    Alert.alert("Eksik Bilgi", "Lütfen kategori ve anahtar kelime girin.");
+    window.alert(...)("Eksik Bilgi", "Lütfen kategori ve anahtar kelime girin.");
   }
 };
 
