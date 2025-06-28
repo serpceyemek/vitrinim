@@ -1,14 +1,9 @@
-import React from "react";
+import React from 'react';
 
-const Header = () => {
-  return (
-    <header>
-      <h1>Vitrinim</h1>
-      <nav>
-        <a href="/">Ana Sayfa</a> | <a href="/ilanlar">İlanlar</a>
-      </nav>
-    </header>
-  );
-};
+const Header = () => (
+  <header style={{ background: '#0070f3', padding: '1rem', color: 'white' }}>
+    <h1 style={{ margin: 0 }}>Vitrinim</h1>
+  </header>
+);
 
 export default Header;
