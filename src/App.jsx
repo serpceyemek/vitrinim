@@ -17,7 +17,8 @@ const sendEmailNotification = (to, message) => {
     message: message
   };
 
-  emailjs.send('your_service_id', 'your_template_id', templateParams, 'your_user_id')
+ emailjs.send('service_vitrinim', 'template_vitrinim', templateParams, 'user_qegEeqYa2IITRC2s7')
+
     .then(() => {
       console.log("Email başarıyla gönderildi");
     }, (error) => {
