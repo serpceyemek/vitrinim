@@ -1,22 +1,21 @@
-import { Routes, Route, NavLink } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div>
-      <nav>
-        <NavLink to="/" end>Ana Sayfa</NavLink>
-        <NavLink to="/about">Hakkımda</NavLink>
-        <NavLink to="/contact">İletişim</NavLink>
-      </nav>
-
-      <Routes>
-        <Route path="/" element={<h1>Ana Sayfa</h1>} />
-        <Route path="/about" element={<h1>Hakkımda</h1>} />
-        <Route path="/contact" element={<h1>İletişim</h1>} />
-        <Route path="*" element={<h1>404 — Sayfa bulunamadı</h1>} />
-      </Routes>
-    </div>
-  );
+function Home() {
+  return <h1>Home Page</h1>;
 }
 
-export default App;
+function About() {
+  return <h1>About Page</h1>;
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </Router>
+  );
+}
