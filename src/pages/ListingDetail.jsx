@@ -3,12 +3,9 @@ import { useLocation, useParams } from "react-router-dom";
 
 // Örnek veri (direct URL ile gelinirse fallback için)
 const listings = [
-  {
-    id: 1,
-    title: "Eviniz Burada!",
-    price: 120000,
-    image: "https://placehold.co/640x400?text=Emlak",
-  },
+  { id: 1, title: "Eviniz Burada!", price: 120000, image: "https://placehold.co/640x400" },
+  { id: 2, title: "Otomobil Fırsatı",  price: 85000,  image: "https://placehold.co/640x400" }
+];
   {
     id: 2,
     title: "Otomobil Fırsatı",
