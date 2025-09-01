@@ -1,25 +1,27 @@
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-// Örnek veri (direct URL ile gelinirse fallback için)
+// Direkt URL ile gelinirse fallback için örnek veri
 const listings = [
-  { id: 1, title: "Eviniz Burada!", price: 120000, image: "https://placehold.co/640x400" },
-  { id: 2, title: "Otomobil Fırsatı",  price: 85000,  image: "https://placehold.co/640x400" }
-];
+  {
+    id: 1,
+    title: "Eviniz Burada!",
+    price: 120000,
+    image: "https://placehold.co/640x400",
+  },
   {
     id: 2,
     title: "Otomobil Fırsatı",
     price: 85000,
-    image: "https://placehold.co/640x400?text=Otomobil",
+    image: "https://placehold.co/640x400",
   },
 ];
 
 export default function ListingDetail() {
   const { id } = useParams();
-  const { state } = useLocation(); // ← Link ile gelen veri (varsa)
+  const { state } = useLocation();
 
-  // 1) Öncelik: Link state'inden gelen öğe
-  // 2) Fallback: sayfa direkt URL ile açılırsa local "listings" içinden ID ile bul
+  // Öncelik: Link state'inden gelen veri; yoksa ID ile local listeden bul
   const item = state ?? listings.find((l) => l.id === Number(id));
 
   if (!item) {
