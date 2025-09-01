@@ -1,6 +1,7 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
+// Örnek veri (direct URL ile gelinirse fallback için)
 const listings = [
   {
     id: 1,
@@ -18,7 +19,11 @@ const listings = [
 
 export default function ListingDetail() {
   const { id } = useParams();
-  const item = listings.find((l) => l.id === Number(id));
+  const { state } = useLocation(); // ← Link ile gelen veri (varsa)
+
+  // 1) Öncelik: Link state'inden gelen öğe
+  // 2) Fallback: sayfa direkt URL ile açılırsa local "listings" içinden ID ile bul
+  const item = state ?? listings.find((l) => l.id === Number(id));
 
   if (!item) {
     return (
