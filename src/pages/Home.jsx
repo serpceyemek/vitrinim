@@ -33,8 +33,10 @@ export default function Home() {
           <Link
             key={l.id}
             to={`/listing/${l.id}`}
+            state={l} // ← veriyi route'a taşıyoruz
             style={{ textDecoration: "none", color: "inherit" }}
           >
+            >
             <article
               style={{
                 border: "1px solid #e5e7eb",
