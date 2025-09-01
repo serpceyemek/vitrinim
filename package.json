@@ -8,6 +8,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+    "postinstall": "chmod +x node_modules/.bin/react-scripts"
   },
   "dependencies": {
     "emailjs-com": "^3.2.0",
