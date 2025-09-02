@@ -5,6 +5,7 @@ import listings from "../data/listings";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [sortKey, setSortKey] = useState(""); // "", priceAsc, priceDesc, titleAsc
 
   // Türkçe’ye duyarlı normalize
   const norm = (s) => (s ?? "").toString().toLocaleLowerCase("tr");
@@ -21,12 +22,10 @@ export default function Home() {
     }
   };
 
-  // Arama: başlık + görsel yazısı + fiyat
-  // "ilan" yazılırsa genel arama gibi tüm sonuçları göster
+  // Filtre: başlık + görsel yazısı + fiyat; "ilan" yazılırsa tüm sonuçlar
   const filtered = useMemo(() => {
     const qNum = query.replace(/[^\d]/g, ""); // 85.000 -> 85000
     const isGeneric = q.includes("ilan");
-
     if (isGeneric) return listings;
 
     return listings.filter((l) => {
@@ -37,47 +36,83 @@ export default function Home() {
     });
   }, [q, query]);
 
+  // Sıralama
+  const sorted = useMemo(() => {
+    const arr = [...filtered];
+    switch (sortKey) {
+      case "priceAsc":
+        arr.sort((a, b) => a.price - b.price);
+        break;
+      case "priceDesc":
+        arr.sort((a, b) => b.price - a.price);
+        break;
+      case "titleAsc":
+        arr.sort((a, b) => norm(a.title).localeCompare(norm(b.title), "tr"));
+        break;
+      default:
+        // dokunma
+        break;
+    }
+    return arr;
+  }, [filtered, sortKey]);
+
   return (
     <main style={{ padding: "1rem" }}>
       <h2>Öne Çıkan İlanlar</h2>
 
+      {/* Arama + Temizle + Sırala */}
       <div
         style={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "1fr auto",
           gap: 8,
           alignItems: "center",
           margin: "12px 0",
         }}
       >
-        <input
-          placeholder="Ara: başlık veya fiyat…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 1, padding: 8 }}
-        />
-        <button
-          type="button"
-          onClick={() => setQuery("")}
-          style={{ padding: "8px 12px", cursor: "pointer" }}
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <input
+            placeholder="Ara: başlık veya fiyat…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{ flex: 1, padding: 8, minWidth: 220 }}
+          />
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            style={{ padding: "8px 12px", cursor: "pointer" }}
+          >
+            Temizle
+          </button>
+        </div>
+
+        <select
+          value={sortKey}
+          onChange={(e) => setSortKey(e.target.value)}
+          style={{ padding: 8 }}
+          aria-label="Sırala"
         >
-          Temizle
-        </button>
+          <option value="">Sırala: Varsayılan</option>
+          <option value="priceAsc">Fiyat (Artan)</option>
+          <option value="priceDesc">Fiyat (Azalan)</option>
+          <option value="titleAsc">Başlık (A→Z)</option>
+        </select>
       </div>
 
       {/* Sonuç sayacı */}
       <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 10 }}>
         {q ? (
           <>
-            “{query}” için <strong>{filtered.length}</strong> sonuç
+            “{query}” için <strong>{sorted.length}</strong> sonuç
           </>
         ) : (
           <>
-            Toplam <strong>{listings.length}</strong> ilan
+            Toplam <strong>{sorted.length}</strong> ilan
           </>
         )}
       </div>
 
-      {filtered.length === 0 ? (
+      {sorted.length === 0 ? (
         <p>Aramana uygun sonuç bulunamadı.</p>
       ) : (
         <div
@@ -88,7 +123,7 @@ export default function Home() {
             marginTop: "12px",
           }}
         >
-          {filtered.map((l) => (
+          {sorted.map((l) => (
             <Link
               key={l.id}
               to={`/listing/${l.id}`}
