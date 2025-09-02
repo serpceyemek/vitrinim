@@ -32,12 +32,28 @@ export default function Home() {
     <main style={{ padding: "1rem" }}>
       <h2>Öne Çıkan İlanlar</h2>
 
-      <input
-        placeholder="Ara: başlık veya fiyat…"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        style={{ width: 400, maxWidth: "100%", padding: 8, margin: "12px 0" }}
-      />
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          alignItems: "center",
+          margin: "12px 0",
+        }}
+      >
+        <input
+          placeholder="Ara: başlık veya fiyat…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{ flex: 1, padding: 8 }}
+        />
+        <button
+          type="button"
+          onClick={() => setQuery("")}
+          style={{ padding: "8px 12px", cursor: "pointer" }}
+        >
+          Temizle
+        </button>
+      </div>
 
       {filtered.length === 0 ? (
         <p>Aramana uygun sonuç bulunamadı.</p>
