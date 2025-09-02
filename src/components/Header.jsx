@@ -2,24 +2,44 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => (
-  <header style={{ padding: "1rem", background: "#007bff", color: "#fff" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <header
+    style={{
+      padding: "12px 16px",
+      background: "#1976d2",
+      color: "#fff",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+    }}
+  >
+    {/* Sol: Logo + isim (tıklanabilir) */}
+    <Link
+      to="/"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        color: "inherit",
+        textDecoration: "none",
+      }}
+    >
       <img
-        src="/logo.png"
+        src="/logo.png" // public/logo.png dosyan
         alt="Vitrinim"
-        width={28}
-        height={28}
+        width="28"
+        height="28"
         style={{ display: "block" }}
       />
-      <h1 style={{ margin: 0, fontSize: "1.25rem" }}>Vitrinim</h1>
-    </div>
+      <strong>Vitrinim</strong>
+    </Link>
 
-    <nav style={{ marginTop: 8 }}>
-      <Link to="/" style={{ margin: "0 1rem", color: "white" }}>
+    {/* Sağ: basit menü örneği (istersen kalır) */}
+    <nav>
+      <Link to="/" style={{ marginLeft: 16, color: "#fff" }}>
         Anasayfa
       </Link>
-      <Link to="/ilan/1" style={{ margin: "0 1rem", color: "white" }}>
-        İlan Detayı
+      <Link to="/listing/1" style={{ marginLeft: 12, color: "#fff" }}>
+        İlan Detayı (örnek)
       </Link>
     </nav>
   </header>
