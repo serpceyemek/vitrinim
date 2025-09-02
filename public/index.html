@@ -9,18 +9,23 @@
 
     <title>Vitrinim</title>
 
-    <!-- Favicon / Apple Touch Icon -->
+    <!-- Favicon / iOS ikon -->
     <link rel="icon" href="/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="/logo.png" />
 
-    <!-- Mobil tarayıcı üst bar rengi -->
-    <meta name="theme-color" content="#f97316" />
+    <!-- iPhone/Safari üst bar rengi -->
+    <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Basit SEO -->
-    <meta name="description" content="Vitrinim — ilanlarını kolayca ara, listele ve keşfet." />
+    <meta
+      name="description"
+      content="Vitrinim — Emlak, araç, 2. el ve daha fazlasını kolayca ara ve listele."
+    />
   </head>
   <body>
     <div id="root"></div>
   </body>
 </html>
-
