@@ -37,7 +37,6 @@ export default function Home() {
         const bv = Number(b.price) || 0;
         return sort === "price-asc" ? av - bv : bv - av;
       } else {
-        // title-asc / title-desc
         const cmp = a.title.toLocaleCompare(b.title, "tr", {
           sensitivity: "base",
         });
@@ -49,39 +48,42 @@ export default function Home() {
 
   return (
     <main style={{ padding: "1rem" }}>
+      {/* Sayfa içi stil (hover) */}
+      <style>{`
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
+        .card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; 
+                box-shadow: 0 1px 2px rgba(0,0,0,0.04); background:#fff;
+                transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.10); border-color:#d1d5db; }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; display:block; transition: transform .25s ease; }
+        .card:hover img { transform: scale(1.02); }
+        .title { margin: 12px 0 6px; font-weight: 700; font-size: 1.05rem; color:#111827; }
+        .price { color:#374151; font-weight:600; }
+        .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:12px 0; }
+        .search { flex: 1 1 280px; padding: 8px; border:1px solid #e5e7eb; border-radius:8px; }
+        .btn { padding:8px 12px; cursor:pointer; border:none; border-radius:8px; background:#f3f4f6; }
+        .btn:hover { background:#e5e7eb; }
+        .label { margin-left:auto; font-weight:600; display:flex; align-items:center; gap:8px; }
+        select { padding:8px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; }
+      `}</style>
+
       <h2>Öne Çıkan İlanlar</h2>
 
       {/* Arama + Sıralama */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          alignItems: "center",
-          flexWrap: "wrap",
-          margin: "12px 0",
-        }}
-      >
+      <div className="controls">
         <input
+          className="search"
           placeholder="Ara: başlık ya da fiyat…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: "1 1 280px", padding: 8 }}
         />
-        <button
-          type="button"
-          onClick={() => setQuery("")}
-          style={{ padding: "8px 12px", cursor: "pointer" }}
-        >
+        <button type="button" className="btn" onClick={() => setQuery("")}>
           Temizle
         </button>
 
-        <label style={{ marginLeft: "auto" }}>
-          <span style={{ marginRight: 8, fontWeight: 600 }}>Sırala:</span>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            style={{ padding: 8 }}
-          >
+        <label className="label">
+          Sırala:
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
             <option value="price-asc">Fiyat (Artan)</option>
             <option value="price-desc">Fiyat (Azalan)</option>
             <option value="title-asc">Başlık (A→Z)</option>
@@ -93,14 +95,7 @@ export default function Home() {
       {sorted.length === 0 ? (
         <p>Aramana uygun sonuç bulunamadı.</p>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: 16,
-            marginTop: 12,
-          }}
-        >
+        <div className="grid">
           {sorted.map((l) => (
             <Link
               key={l.id}
@@ -108,27 +103,12 @@ export default function Home() {
               state={l}
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <article
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 8,
-                  padding: 16,
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                }}
-              >
-                <img
-                  src={l.image}
-                  alt={l.title}
-                  style={{
-                    width: "100%",
-                    height: 160,
-                    objectFit: "cover",
-                    borderRadius: 6,
-                    display: "block",
-                  }}
-                />
-                <h3 style={{ margin: "12px 0 6px" }}>{l.title}</h3>
-                <div>{Number(l.price).toLocaleString("tr-TR")} ₺</div>
+              <article className="card" role="group" aria-label={l.title}>
+                <img src={l.image} alt={l.title} />
+                <h3 className="title">{l.title}</h3>
+                <div className="price">
+                  {Number(l.price).toLocaleString("tr-TR")} ₺
+                </div>
               </article>
             </Link>
           ))}
