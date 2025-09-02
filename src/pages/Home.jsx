@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/pages/Home.jsx
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import listings from "../data/listings";
 
@@ -20,13 +21,16 @@ export default function Home() {
     }
   };
 
-  // Başlık + görsel yazısı + fiyat üzerinde arama
-  const filtered = listings.filter((l) => {
-    const title = norm(l.title);
-    const imgText = getImageText(l.image);
-    const priceMatch = String(l.price).includes(query.trim());
-    return title.includes(q) || imgText.includes(q) || priceMatch;
-  });
+  // Başlık + görsel yazısı + fiyat üzerinde arama (fiyat için yalnızca rakamları kıyasla)
+  const filtered = useMemo(() => {
+    const qNum = query.replace(/[^\d]/g, ""); // 85.000 -> 85000
+    return listings.filter((l) => {
+      const title = norm(l.title);
+      const imgText = getImageText(l.image);
+      const priceMatch = qNum && String(l.price).includes(qNum);
+      return title.includes(q) || imgText.includes(q) || priceMatch;
+    });
+  }, [query]);
 
   return (
     <main style={{ padding: "1rem" }}>
