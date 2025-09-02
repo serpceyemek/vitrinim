@@ -22,14 +22,12 @@ export default function Home() {
   };
 
   // Arama: başlık + görsel yazısı + fiyat
-  // "ilan" gibi genel arama yazılırsa TÜM sonuçları göster (genel filtre)
+  // "ilan" yazılırsa genel arama gibi tüm sonuçları göster
   const filtered = useMemo(() => {
     const qNum = query.replace(/[^\d]/g, ""); // 85.000 -> 85000
-    const isGeneric = q.includes("ilan"); // "ilan", "İLAN", "iLan" vb.
+    const isGeneric = q.includes("ilan");
 
-    if (isGeneric) {
-      return listings; // genel kelime → tüm ilanlar
-    }
+    if (isGeneric) return listings;
 
     return listings.filter((l) => {
       const title = norm(l.title);
@@ -64,6 +62,19 @@ export default function Home() {
         >
           Temizle
         </button>
+      </div>
+
+      {/* Sonuç sayacı */}
+      <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 10 }}>
+        {q ? (
+          <>
+            “{query}” için <strong>{filtered.length}</strong> sonuç
+          </>
+        ) : (
+          <>
+            Toplam <strong>{listings.length}</strong> ilan
+          </>
+        )}
       </div>
 
       {filtered.length === 0 ? (
