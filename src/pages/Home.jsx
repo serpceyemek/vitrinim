@@ -21,16 +21,23 @@ export default function Home() {
     }
   };
 
-  // Başlık + görsel yazısı + fiyat üzerinde arama (fiyat için yalnızca rakamları kıyasla)
+  // Arama: başlık + görsel yazısı + fiyat
+  // "ilan" gibi genel arama yazılırsa TÜM sonuçları göster (genel filtre)
   const filtered = useMemo(() => {
     const qNum = query.replace(/[^\d]/g, ""); // 85.000 -> 85000
+    const isGeneric = q.includes("ilan"); // "ilan", "İLAN", "iLan" vb.
+
+    if (isGeneric) {
+      return listings; // genel kelime → tüm ilanlar
+    }
+
     return listings.filter((l) => {
       const title = norm(l.title);
       const imgText = getImageText(l.image);
       const priceMatch = qNum && String(l.price).includes(qNum);
       return title.includes(q) || imgText.includes(q) || priceMatch;
     });
-  }, [query]);
+  }, [q, query]);
 
   return (
     <main style={{ padding: "1rem" }}>
