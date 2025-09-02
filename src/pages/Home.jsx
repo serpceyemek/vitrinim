@@ -6,7 +6,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
 
   // Türkçe’ye duyarlı normalize
-  const norm = (s) => (s ?? "").toString().toLocaleLowerCase("tr-TR");
+  const norm = (s) => (s ?? "").toString().toLocaleLowerCase("tr");
   const q = norm(query);
 
   // Görsel URL’sindeki ?text=... değerini güvenle al
