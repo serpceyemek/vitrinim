@@ -1,13 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
-
-const listings = [
-  {
-    id: 1,
-    title: "Eviniz Burada!",
-    price: 120000,
-    image: "https://placehold.co/320x200?text=Emlak",
-  },
+import { Link } from "react-router-dom";import listings from "../data/listings";
   {
     id: 2,
     title: "Otomobil Fırsatı",
@@ -31,29 +23,28 @@ export default function Home() {
       >
         {listings.map((l) => (
           <Link
-            key={l.id}
-            to={`/listing/${l.id}`}
-            state={l} // ← veriyi route'a taşıyoruz
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            >
-            <article
-              style={{
-                border: "1px solid #e5e7eb",
-                borderRadius: 8,
-                padding: 16,
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-              }}
-            >
-              <img
-                src={l.image}
-                alt={l.title}
-                style={{ width: "100%", borderRadius: 6, display: "block" }}
-              />
-              <h3 style={{ margin: "12px 0 6px" }}>{l.title}</h3>
-              <div>{l.price.toLocaleString("tr-TR")} ₺</div>
-            </article>
-          </Link>
+  key={l.id}
+  to={`/listing/${l.id}`}
+  state={l}
+  style={{ textDecoration: "none", color: "inherit" }}
+>
+  <article
+    style={{
+      border: "1px solid #e5e7eb",
+      borderRadius: 8,
+      padding: 16,
+      boxShadow: "0 1px 2px rgba(0,0,0,0.04)"
+    }}
+  >
+    <img
+      src={l.image}
+      alt={l.title}
+      style={{ width: "100%", borderRadius: 6, display: "block" }}
+    />
+    <h3 style={{ margin: "12px 0 6px" }}>{l.title}</h3>
+    <div>{l.price.toLocaleString("tr-TR")} ₺</div>
+  </article>
+</Link>
         ))}
       </div>
     </main>
