@@ -41,13 +41,12 @@ export default function Header() {
   };
 
   const link = (active) => ({
-    color: "white",
-    textDecoration: "none",
-    fontWeight: 600,
-    opacity: active ? 1 : 0.9,
-    borderBottom: active ? "2px solid #fff" : "2px solid transparent",
-    paddingBottom: 2,
-  });
+  padding: "6px 12px",
+  textDecoration: "none",
+  color: "#fff",
+  borderBottom: active ? "2px solid #fff" : "2px solid transparent",
+  marginRight: 16,
+});
 
   return (
     <header style={wrap}>
@@ -87,6 +86,7 @@ export default function Header() {
           <Link to="/c" style={link(pathname.startsWith("/c"))}>
   Kategoriler
   <Link to="/new" style={link(pathname.startsWith("/new"))}>İlan Yayınla</Link>
+
 </Link>
         </nav>
       </div>
