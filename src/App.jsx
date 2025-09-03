@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import ListingDetail from "./pages/ListingDetail";
+import CategoryPage from "./pages/Category";
 
 function NotFound() {
   return (
@@ -61,6 +62,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/c/*" element={<CategoryPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

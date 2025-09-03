@@ -1,42 +1,92 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
+  const { pathname } = useLocation();
+
+  const wrap = {
+    position: "sticky",
+    top: 0,
+    zIndex: 50,
+    background: "#f97316", // turuncu taç rengi
+    color: "white",
+    borderBottom: "1px solid rgba(0,0,0,0.08)",
+  };
+
+  const bar = {
+    maxWidth: 1200,
+    margin: "0 auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+    padding: "12px 16px",
+  };
+
+  const brand = {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    textDecoration: "none",
+    color: "white",
+    fontWeight: 700,
+    fontSize: 18,
+    lineHeight: 1,
+  };
+
+  const nav = {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+  };
+
+  const link = (active) => ({
+    color: "white",
+    textDecoration: "none",
+    fontWeight: 600,
+    opacity: active ? 1 : 0.9,
+    borderBottom: active ? "2px solid #fff" : "2px solid transparent",
+    paddingBottom: 2,
+  });
+
   return (
-    <header
-      style={{
-        background: "#f97316", // turuncu
-        color: "#fff",
-        padding: "10px 16px",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 16,
-        }}
-      >
-        {/* Logo + metin: tek link */}
-        <Link
-          to="/"
-          style={{ display: "flex", alignItems: "center", gap: 10, color: "#fff", textDecoration: "none" }}
-        >
-          <img
-            src="/logo.png"
-            alt="Vitrinim"
-            style={{ width: 28, height: 28, objectFit: "contain" }}
-          />
-          <strong style={{ fontSize: 18 }}>Vitrinim</strong>
+    <header style={wrap}>
+      <div style={bar}>
+        {/* LOGO + MARKA (tamamı tıklanır) */}
+        <Link to="/" style={brand} aria-label="Vitrinim - Anasayfa">
+          {/* Turuncu taç/mini vitrin: inline SVG */}
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            role="img"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="3" fill="white" />
+            <path
+              d="M5 10h14v8H5z"
+              fill="#f97316"
+              opacity="0.12"
+            />
+            <path
+              d="M7 7h10M7 12h5"
+              stroke="#f97316"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+          <span>Vitrinim</span>
         </Link>
 
-        {/* Basit menü */}
-        <nav style={{ display: "flex", gap: 16 }}>
-          <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>Anasayfa</Link>
-          <Link to="/listing/1" style={{ color: "#fff", textDecoration: "none" }}>İlan Detayı</Link>
+        {/* NAV */}
+        <nav style={nav} aria-label="Ana gezinme">
+          <Link to="/" style={link(pathname === "/")}>
+            Anasayfa
+          </Link>
+          <Link to="/c" style={link(pathname.startsWith("/c"))}>
+  Kategoriler
+</Link>
         </nav>
       </div>
     </header>

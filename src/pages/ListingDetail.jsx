@@ -72,12 +72,5 @@ export default function ListingDetail() {
 const styles = `
   .wrap { max-width: 1100px; margin: 0 auto; }
   .back { display:inline-block; margin: 6px 0 14px; text-decoration:none; color:#2563eb; }
-  .grid { display:grid; grid-template-columns: 1.2fr 1fr; gap:20px; }
-  .media img { width:100%; height:420px; object-fit:cover; border-radius:12px; display:block; }
-  .panel { border:1px solid #e5e7eb; border-radius:12px; padding:16px; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04); }
-  .title { margin: 0 0 8px; font-size:1.4rem; color:#111827; }
-  .price { font-size:1.25rem; font-weight:700; color:#111827; margin-bottom:10px; }
-  .meta { list-style:none; padding:0; margin:10px 0 16px; color:#374151; }
-  .meta li { margin: 4px 0; }
-  .actions { display:flex; gap:10px; margin-bottom:16px; }
-  .btn { padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#f9fafb; cursor:pointer
+  .grid { display:grid; grid-template-columns: 2fr 1fr; gap:20px; }
+`;

@@ -1,6 +1,7 @@
 // src/pages/Home.jsx
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { topLevelCategories } from "../data/categories";
 import listings from "../data/listings";
 
 export default function Home() {
@@ -12,7 +13,7 @@ export default function Home() {
 
   const getImageText = (url) => {
     try {
-      const u = new URL(url);
+      const u = new URL(url, window.location.origin);
       const raw = u.searchParams.get("text") || "";
       return norm(decodeURIComponent(raw));
     } catch {
@@ -24,7 +25,7 @@ export default function Home() {
     return listings.filter((l) => {
       const title = norm(l.title);
       const imgText = getImageText(l.image);
-      const priceMatch = String(l.price).includes(query.trim());
+      const priceMatch = String(l.price ?? "").includes(query.trim());
       return title.includes(q) || imgText.includes(q) || priceMatch;
     });
   }, [q, query]);
@@ -37,7 +38,7 @@ export default function Home() {
         const bv = Number(b.price) || 0;
         return sort === "price-asc" ? av - bv : bv - av;
       } else {
-        const cmp = a.title.toLocaleCompare(b.title, "tr", {
+        const cmp = (a.title || "").localeCompare(b.title || "", "tr", {
           sensitivity: "base",
         });
         return sort === "title-asc" ? cmp : -cmp;
@@ -66,6 +67,37 @@ export default function Home() {
         .label { margin-left:auto; font-weight:600; display:flex; align-items:center; gap:8px; }
         select { padding:8px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; }
       `}</style>
+
+      {/* Kategori Gezintisi — en üstte */}
+      <section style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>Kategoriler</h2>
+        <div
+          style={{
+            display: "grid",
+            gap: 12,
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          }}
+        >
+          {topLevelCategories.map((c) => (
+            <Link
+              key={c.id}
+              to={`/c/${c.path}`}
+              style={{
+                display: "block",
+                border: "1px solid #eee",
+                padding: 16,
+                borderRadius: 8,
+                background: "#fff",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              <div style={{ fontSize: 12, color: "#999" }}>{c.path}</div>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>{c.name}</div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <h2>Öne Çıkan İlanlar</h2>
 
