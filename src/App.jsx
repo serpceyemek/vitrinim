@@ -8,47 +8,17 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ListingDetail from "./pages/ListingDetail";
 import CategoryPage from "./pages/Category";
+import NewListing from "./pages/NewListing";
 
 function NotFound() {
   return (
-    <main style={{ padding: "1rem" }}>
-      <style>{`
-        .nf-wrap { max-width: 900px; margin: 0 auto; }
-        .nf-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          padding: 28px;
-          background: #fff;
-          box-shadow: 0 1px 2px rgba(0,0,0,.04);
-          text-align: center;
-        }
-        .nf-title { margin: 0 0 8px; font-size: 1.4rem; color: #111827; }
-        .nf-text { color: #4b5563; margin-bottom: 16px; }
-        .nf-actions { display: flex; gap: 10px; justify-content: center; }
-        .nf-btn {
-          padding: 10px 14px; border-radius: 10px; border: 1px solid #e5e7eb;
-          background: #f9fafb; cursor: pointer; text-decoration: none; color: #111827;
-        }
-        .nf-btn:hover { background: #f3f4f6; }
-        .nf-primary { background:#f97316; color:#fff; border-color:#f97316; }
-        .nf-primary:hover { filter: brightness(.96); }
-      `}</style>
-
-      <div className="nf-wrap">
-        <div className="nf-card" role="region" aria-label="Sayfa bulunamadı">
-          <h2 className="nf-title">Sayfa Bulunamadı</h2>
-          <p className="nf-text">
-            Aradığın sayfayı bulamadık. Bağlantı hatalı ya da içerik kaldırılmış
-            olabilir.
-          </p>
-          <div className="nf-actions">
-            <Link to="/" className="nf-btn nf-primary">
-              Anasayfa
-            </Link>
-            <a href="mailto:support@vitrinim.app" className="nf-btn">
-              Destek
-            </a>
-          </div>
+    <main style={{ padding: 24 }}>
+      <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 24, background: "#fff", textAlign: "center" }}>
+        <h2 style={{ margin: 0, fontSize: 20 }}>Sayfa Bulunamadı</h2>
+        <p style={{ color: "#4b5563" }}>Bağlantı hatalı ya da içerik kaldırılmış olabilir.</p>
+        <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+          <Link to="/" style={{ padding: "8px 12px", borderRadius: 8, background: "#f97316", color: "#fff", textDecoration: "none" }}>Anasayfa</Link>
+          <Link to="/c" style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid #e5e7eb", textDecoration: "none", color: "#111827" }}>Kategoriler</Link>
         </div>
       </div>
     </main>
@@ -61,8 +31,9 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/listing/:id" element={<ListingDetail />} />
         <Route path="/c/*" element={<CategoryPage />} />
+        <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/new" element={<NewListing />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

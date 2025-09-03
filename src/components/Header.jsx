@@ -86,6 +86,7 @@ export default function Header() {
           </Link>
           <Link to="/c" style={link(pathname.startsWith("/c"))}>
   Kategoriler
+  <Link to="/new" style={link(pathname.startsWith("/new"))}>İlan Yayınla</Link>
 </Link>
         </nav>
       </div>
