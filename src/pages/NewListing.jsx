@@ -60,6 +60,27 @@ export default function NewListing() {
       setMsg("Taslak okunamadı.");
     }
   };
+// Yerelde yayınla
+const publishLocal = (e) => {
+  e.preventDefault();
+
+  // form verisini derle
+  const item = {
+    title: title.trim(),
+    price: Number(price) || 0,
+    categoryId,
+    desc: desc.trim(),
+    image: imageUrl.trim(), // varsa görsel alanın ismi buysa
+  };
+
+  // localStorage listesine ekle
+  const record = addLocalListing(item);
+
+  setMsg("İlan yerelde yayınlandı.");
+
+  // İstersen sayfaya git:
+  // navigate(`/listing/${record.id}`, { state: record });
+};
 
   const clearAll = () => {
     setTitle("");
@@ -71,7 +92,7 @@ export default function NewListing() {
   };
 
   // Asıl yayınlama
-  const publishLocal = () => {
+  
     setMsg("");
 
     const t = title.trim();
@@ -93,7 +114,7 @@ export default function NewListing() {
     setMsg("İlan yerelde yayınlandı.");
     const cat = categories.find((x) => x.id === c);
     navigate(cat ? `/c/${cat.path}` : "/");
-  };
+  
 
   return (
     <main style={{ padding: 24, maxWidth: 720, margin: "0 auto" }}>
@@ -196,4 +217,4 @@ export default function NewListing() {
       </form>
     </main>
   );
-}
+
