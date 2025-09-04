@@ -1,151 +1,110 @@
-// src/pages/Home.jsx
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { topLevelCategories } from "../data/categories";
-import listings from "../data/listings";
+import { useListingPool } from "../data/listings";
+
+const formatPrice = (n) =>
+  new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(n);
+const formatDate = (iso) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
+};
 
 export default function Home() {
+  const { pool, localCount } = useListingPool();
+
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("price-asc"); // price-asc | price-desc | title-asc | title-desc
-
-  const norm = (s) => (s ?? "").toString().toLocaleLowerCase("tr");
-  const q = norm(query);
-
-  const getImageText = (url) => {
-    try {
-      const u = new URL(url, window.location.origin);
-      const raw = u.searchParams.get("text") || "";
-      return norm(decodeURIComponent(raw));
-    } catch {
-      return "";
-    }
-  };
+  const [sortKey, setSortKey] = useState("price"); // price | title | date
+  const [sortDir, setSortDir] = useState("asc");
+  const toggleDir = () => setSortDir((d) => (d === "asc" ? "desc" : "asc"));
 
   const filtered = useMemo(() => {
-    return listings.filter((l) => {
-      const title = norm(l.title);
-      const imgText = getImageText(l.image);
-      const priceMatch = String(l.price ?? "").includes(query.trim());
-      return title.includes(q) || imgText.includes(q) || priceMatch;
+    const q = query.trim().toLowerCase();
+    let list = [...pool];
+    if (q) list = list.filter((it) => [it.title, it.location, it.category].some((v) => String(v).toLowerCase().includes(q)));
+    list.sort((a, b) => {
+      if (sortKey === "price") return sortDir === "asc" ? a.price - b.price : b.price - a.price;
+      if (sortKey === "title") return sortDir === "asc" ? a.title.localeCompare(b.title, "tr") : b.title.localeCompare(a.title, "tr");
+      if (sortKey === "date")  { const da = +new Date(a.postedAt), db = +new Date(b.postedAt); return sortDir === "asc" ? da - db : db - da; }
+      return 0;
     });
-  }, [q, query]);
+    return list;
+  }, [pool, query, sortKey, sortDir]);
 
-  const sorted = useMemo(() => {
-    const arr = filtered.slice();
-    arr.sort((a, b) => {
-      if (sort.startsWith("price")) {
-        const av = Number(a.price) || 0;
-        const bv = Number(b.price) || 0;
-        return sort === "price-asc" ? av - bv : bv - av;
-      } else {
-        const cmp = (a.title || "").localeCompare(b.title || "", "tr", {
-          sensitivity: "base",
-        });
-        return sort === "title-asc" ? cmp : -cmp;
-      }
-    });
-    return arr;
-  }, [filtered, sort]);
+  const featured = useMemo(() => filtered.filter((l) => l.isFeatured).slice(0, 12), [filtered]);
 
   return (
-    <main style={{ padding: "1rem" }}>
-      {/* Sayfa içi stil (hover) */}
-      <style>{`
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 12px; }
-        .card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; 
-                box-shadow: 0 1px 2px rgba(0,0,0,0.04); background:#fff;
-                transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.10); border-color:#d1d5db; }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; display:block; transition: transform .25s ease; }
-        .card:hover img { transform: scale(1.02); }
-        .title { margin: 12px 0 6px; font-weight: 700; font-size: 1.05rem; color:#111827; }
-        .price { color:#374151; font-weight:600; }
-        .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:12px 0; }
-        .search { flex: 1 1 280px; padding: 8px; border:1px solid #e5e7eb; border-radius:8px; }
-        .btn { padding:8px 12px; cursor:pointer; border:none; border-radius:8px; background:#f3f4f6; }
-        .btn:hover { background:#e5e7eb; }
-        .label { margin-left:auto; font-weight:600; display:flex; align-items:center; gap:8px; }
-        select { padding:8px; border:1px solid #e5e7eb; border-radius:8px; background:#fff; }
-      `}</style>
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+      {localCount > 0 && (
+        <div className="mb-4 rounded-2xl border bg-white/70 p-3 text-sm text-gray-700">
+          Tarayıcıda kayıtlı <strong>{localCount}</strong> ilan bulundu ve listeye eklendi.
+        </div>
+      )}
 
-      {/* Kategori Gezintisi — en üstte */}
-      <section style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>Kategoriler</h2>
-        <div
-          style={{
-            display: "grid",
-            gap: 12,
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-          }}
-        >
-          {topLevelCategories.map((c) => (
-            <Link
-              key={c.id}
-              to={`/c/${c.path}`}
-              style={{
-                display: "block",
-                border: "1px solid #eee",
-                padding: 16,
-                borderRadius: 8,
-                background: "#fff",
-                textDecoration: "none",
-                color: "inherit",
-              }}
-            >
-              <div style={{ fontSize: 12, color: "#999" }}>{c.path}</div>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>{c.name}</div>
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex w-full max-w-xl items-center gap-2">
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ara: başlık, konum, kategori…"
+            className="w-full rounded-2xl border border-gray-300 bg-white/70 px-4 py-2 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-200" />
+          {query && <button onClick={() => setQuery("")} className="rounded-2xl border px-3 py-2 text-sm hover:bg-gray-50">Temizle</button>}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-gray-600">Sırala:</label>
+          <select value={sortKey} onChange={(e) => setSortKey(e.target.value)} className="rounded-2xl border px-3 py-2 text-sm">
+            <option value="price">Fiyat</option><option value="title">Başlık</option><option value="date">Tarih</option>
+          </select>
+          <button onClick={toggleDir} className="rounded-2xl border px-3 py-2 text-sm hover:bg-gray-50">{sortDir === "asc" ? "Artan" : "Azalan"}</button>
+        </div>
+      </div>
+
+      <section className="mt-6">
+        <h2 className="text-lg font-semibold">Öne Çıkan İlanlar</h2>
+        <div className="mt-3 flex gap-4 overflow-x-auto pb-2">
+          {featured.length === 0 ? <div className="text-sm text-gray-500">Öne çıkan ilan yok.</div> : featured.map((item) => (
+            <Link key={item.id} to={`/listing/${item.id}`} className="min-w-[260px] max-w-[260px] rounded-2xl border bg-white shadow-sm transition hover:shadow-md">
+              <div className="aspect-[16/10] w-full overflow-hidden rounded-t-2xl">
+                <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+              </div>
+              <div className="p-3">
+                <div className="truncate text-sm text-gray-500">{item.location}</div>
+                <div className="mt-0.5 line-clamp-2 font-medium">{item.title}</div>
+                <div className="mt-1 text-base font-semibold">{formatPrice(item.price)}</div>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <h2>Öne Çıkan İlanlar</h2>
-
-      {/* Arama + Sıralama */}
-      <div className="controls">
-        <input
-          className="search"
-          placeholder="Ara: başlık ya da fiyat…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button type="button" className="btn" onClick={() => setQuery("")}>
-          Temizle
-        </button>
-
-        <label className="label">
-          Sırala:
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="price-asc">Fiyat (Artan)</option>
-            <option value="price-desc">Fiyat (Azalan)</option>
-            <option value="title-asc">Başlık (A→Z)</option>
-            <option value="title-desc">Başlık (Z→A)</option>
-          </select>
-        </label>
-      </div>
-
-      {sorted.length === 0 ? (
-        <p>Aramana uygun sonuç bulunamadı.</p>
-      ) : (
-        <div className="grid">
-          {sorted.map((l) => (
-            <Link
-              key={l.id}
-              to={`/listing/${l.id}`}
-              state={l}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <article className="card" role="group" aria-label={l.title}>
-                <img src={l.image} alt={l.title} />
-                <h3 className="title">{l.title}</h3>
-                <div className="price">
-                  {Number(l.price).toLocaleString("tr-TR")} ₺
-                </div>
-              </article>
-            </Link>
-          ))}
+      <section className="mt-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Sonuçlar</h2>
+          <div className="text-sm text-gray-500">{filtered.length} ilan</div>
         </div>
-      )}
-    </main>
+
+        {filtered.length === 0 ? (
+          <div className="rounded-2xl border bg-white p-6 text-center text-gray-600">Aramana uygun sonuç bulunamadı.</div>
+        ) : (
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((item) => (
+              <li key={item.id}>
+                <Link to={`/listing/${item.id}`} className="group block overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                  <div className="aspect-[16/10] w-full overflow-hidden">
+                    <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-gray-500">{item.location}</span>
+                      <span className="text-xs text-gray-400">{formatDate(item.postedAt)}</span>
+                    </div>
+                    <h3 className="mt-1 line-clamp-2 text-base font-semibold">{item.title}</h3>
+                    <div className="mt-1 text-lg font-bold">{formatPrice(item.price)}</div>
+                    <div className="mt-2 text-xs text-gray-500">Kategori: {item.category}</div>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
   );
 }

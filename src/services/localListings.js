@@ -1,4 +1,9 @@
 // src/services/localListings.js
+export function addLocalListing(item) {
+  console.log("[addLocalListing] run", item);
+  // ...
+}
+
 export const STORAGE_KEY = "user_listings";
 
 export function getLocalListings() {
@@ -11,7 +16,8 @@ export function getLocalListings() {
 }
 
 export function addLocalListing(item) {
-  const list = getLocalListings();
+ console.log("[addLocalListing] run", item);
+ const list = getLocalListings();
   const id = "local-" + Date.now();
   const createdAt = new Date().toISOString();
 

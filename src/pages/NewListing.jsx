@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { categories } from "../data/categories";
+console.log("[addLocalListing] run");
 import { addLocalListing } from "../services/localListings";
 
 export default function NewListing() {
@@ -12,27 +13,8 @@ export default function NewListing() {
   const [imageUrl, setImageUrl] = useState("");
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
- 
-  e.preventDefault();
-  if (!title.trim() || !price || !categoryId) {
-    setMsg("Lütfen başlık, fiyat ve kategoriyi doldurun.");
-    return;
-  }
-  const rec = addLocalListing({
-    title: title.trim(),
-    price: Number(price),
-    categoryId,
-    desc: (desc || "").trim(),
-    image: (imageUrl || "").trim(),
-  });
-  setMsg("İlan yerelde yayınlandı.");
-  // İstersen rec ile yönlendirebiliriz:
-  // navigate(`/listing/${rec.id}`, { state: rec });
-};
 
-
-  // Taslak kaydı (opsiyonel)
-  const saveDraft = (e) => {
+  function saveDraft(e) {
     e.preventDefault();
     const draft = {
       title: title.trim(),
@@ -43,84 +25,44 @@ export default function NewListing() {
     };
     localStorage.setItem("new_listing_draft", JSON.stringify(draft));
     setMsg("Taslak kaydedildi (localStorage).");
-  };
+  }
 
-  const loadDraft = () => {
+  function loadDraft() {
     const raw = localStorage.getItem("new_listing_draft");
     try {
       const d = raw ? JSON.parse(raw) : null;
       if (!d) return setMsg("Yüklenecek taslak yok.");
       setTitle(d.title ?? "");
       setPrice(d.price ?? "");
-      setCategoryId(d.categoryId ?? "");
+      setCategoryId(d.categoryId ?? (categories[0]?.id || ""));
       setDesc(d.desc ?? "");
       setImageUrl(d.image ?? "");
       setMsg("Taslak yüklendi.");
     } catch {
       setMsg("Taslak okunamadı.");
     }
-  };
-// Yerelde yayınla
-const publishLocal = (e) => {
-  e.preventDefault();
+  }
 
-  // form verisini derle
-  const item = {
-    title: title.trim(),
-    price: Number(price) || 0,
-    categoryId,
-    desc: desc.trim(),
-    image: imageUrl.trim(), // varsa görsel alanın ismi buysa
-  };
-
-  // localStorage listesine ekle
-  const record = addLocalListing(item);
-
-  setMsg("İlan yerelde yayınlandı.");
-
-  // İstersen sayfaya git:
-  // navigate(`/listing/${record.id}`, { state: record });
-};
-
-  const clearAll = () => {
+  function clearAll() {
     setTitle("");
     setPrice("");
     setCategoryId(categories[0]?.id || "");
     setDesc("");
     setImageUrl("");
     setMsg("");
-  };
+    localStorage.removeItem("new_listing_draft");
+  }
+console.log("[handleSubmit] fired");
 
-  // Asıl yayınlama
-  
-    setMsg("");
+  handleSubmit
 
-    const t = title.trim();
-    const p = Number(price);
-    const c = categoryId;
-
-    if (!t) { setMsg("Başlık gerekli."); return; }
-    if (!Number.isFinite(p) || p <= 0) { setMsg("Geçerli bir fiyat gir."); return; }
-    if (!c) { setMsg("Kategori seç."); return; }
-
-    const rec = addLocalListing({
-      title: t,
-      price: p,
-      categoryId: c,
-      desc: desc.trim(),
-      image: imageUrl.trim(),
-    });
-
-    setMsg("İlan yerelde yayınlandı.");
-    const cat = categories.find((x) => x.id === c);
-    navigate(cat ? `/c/${cat.path}` : "/");
-  
+  const opts = (categories || []).map((c) => ({ id: c.id, label: c.name }));
 
   return (
     <main style={{ padding: 24, maxWidth: 720, margin: "0 auto" }}>
       <h1 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>İlan Yayınla</h1>
 
-      <form style={{ display: "grid", gap: 12 }} onSubmit={saveDraft}>
+      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
         <label style={{ display: "grid", gap: 6 }}>
           <span>Başlık *</span>
           <input
@@ -149,8 +91,10 @@ const publishLocal = (e) => {
             onChange={(e) => setCategoryId(e.target.value)}
             style={{ padding: 10, border: "1px solid #e5e7eb", borderRadius: 8, background: "#fff" }}
           >
-            {(categories || []).map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
+            {opts.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label}
+              </option>
             ))}
           </select>
         </label>
@@ -189,20 +133,34 @@ const publishLocal = (e) => {
         ) : null}
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button type="submit" style={{ padding: "10px 14px", borderRadius: 8, background: "#f97316", color: "#fff", border: "none", cursor: "pointer" }}>
+          <button
+            type="button"
+            onClick={saveDraft}
+            style={{ padding: "10px 14px", borderRadius: 8, background: "#f97316", color: "#fff", border: "none", cursor: "pointer" }}
+          >
             Taslağı Kaydet
           </button>
-          <button type="button" onClick={loadDraft} style={{ padding: "10px 14px", borderRadius: 8, background: "#eef2ff", border: "1px solid #c7d2fe", cursor: "pointer" }}>
+
+          <button
+            type="button"
+            onClick={loadDraft}
+            style={{ padding: "10px 14px", borderRadius: 8, background: "#eef2ff", border: "1px solid #c7d2fe", cursor: "pointer" }}
+          >
             Taslağı Yükle
           </button>
-          <button type="button" onClick={clearAll} style={{ padding: "10px 14px", borderRadius: 8, background: "#f3f4f6", border: "1px solid #e5e7eb", cursor: "pointer" }}>
+
+          <button
+            type="button"
+            onClick={clearAll}
+            style={{ padding: "10px 14px", borderRadius: 8, background: "#f3f4f6", border: "1px solid #e5e7eb", cursor: "pointer" }}
+          >
             Temizle
           </button>
 
           <button
   type="button"
-  onClick={publishLocal}
-  style={{ padding: "8px 12px", borderRadius: 8, background: "#16a34a", color: "#fff", border: "1px solid #16a34a" }}
+  onClick={handleSubmit}
+  style={{ padding: "10px 14px", borderRadius: 8, background: "#16a34a", color: "#fff", border: "none", cursor: "pointer" }}
 >
   Yayınla (yerel)
 </button>
@@ -210,11 +168,11 @@ const publishLocal = (e) => {
         </div>
 
         {msg && (
-          <div style={{ color: "#065f46", background: "#ecfdf5", border: "1px solid #a7f3d0", padding: 10, borderRadius: 8 }}>
+          <div style={{ marginTop: 12, padding: 10, border: "1px solid #d1fae5", background: "#ecfdf5", color: "#065f46", borderRadius: 8 }}>
             {msg}
           </div>
         )}
       </form>
     </main>
   );
-
+}

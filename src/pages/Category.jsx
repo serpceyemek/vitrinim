@@ -1,5 +1,5 @@
 // src/pages/Category.jsx
-import React from "react";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import listings from "../data/listings";
 import {
@@ -9,6 +9,7 @@ import {
   getBreadcrumbByPath,
   categories,
 } from "../data/categories";
+import { getLocalListings } from "../services/localListings";
 
 function useCategoryPath() {
   const location = useLocation();
@@ -19,7 +20,6 @@ export default function CategoryPage() {
   const navigate = useNavigate();
   const path = useCategoryPath();
 
-  // Kök: üst kategoriler
   if (!path) {
     return (
       <main style={{ padding: 24 }}>
@@ -37,15 +37,8 @@ export default function CategoryPage() {
           <Link to="/" style={{ color: "#2563eb", textDecoration: "none" }}>Ana sayfa</Link> / <span>Bilinmeyen kategori</span>
         </div>
         <h1 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>Kategori bulunamadı</h1>
-        <p style={{ color: "#555", marginBottom: 16 }}>
-          Aradığınız kategori mevcut değil veya taşınmış olabilir.
-        </p>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ padding: "8px 12px", border: "1px solid #ddd", borderRadius: 6, background: "#fff", cursor: "pointer" }}
-        >
-          Geri dön
-        </button>
+        <p style={{ color: "#555", marginBottom: 16 }}>Aradığınız kategori mevcut değil veya taşınmış olabilir.</p>
+        <button onClick={() => navigate(-1)} style={{ padding: "8px 12px", border: "1px solid #ddd", borderRadius: 6, background: "#fff", cursor: "pointer" }}>Geri dön</button>
       </main>
     );
   }
@@ -66,11 +59,11 @@ export default function CategoryPage() {
     return ids;
   }
   const allowed = new Set(getDescendantIds(cat.id));
-  const filtered = listings.filter((l) => allowed.has(l.categoryId));
+  const pool = [...listings, ...getLocalListings()];
+  const filtered = pool.filter((l) => allowed.has(l.categoryId));
 
   return (
     <main style={{ padding: 24 }}>
-      {/* Breadcrumb */}
       <nav style={{ marginBottom: 12, fontSize: 14 }}>
         <Link to="/" style={{ color: "#2563eb", textDecoration: "none" }}>Ana sayfa</Link>
         <span> / </span>
@@ -87,9 +80,10 @@ export default function CategoryPage() {
         ))}
       </nav>
 
-      <h1 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>{cat.name}</h1>
+      <h1 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>
+  {cat.name} <span style={{ color: "#6b7280", fontWeight: 400 }}>({filtered.length})</span>
+</h1>
 
-      {/* Alt kategoriler */}
       {children.length > 0 ? (
         <section style={{ marginBottom: 24 }}>
           <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Alt Kategoriler</h2>
@@ -101,7 +95,6 @@ export default function CategoryPage() {
         </div>
       )}
 
-      {/* İlanlar */}
       <section style={{ border: "1px solid #eee", padding: 16, borderRadius: 8, background: "#fff" }}>
         <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>İlanlar</h2>
         {filtered.length === 0 ? (
@@ -112,12 +105,11 @@ export default function CategoryPage() {
               <Link
                 key={item.id}
                 to={`/listing/${item.id}`}
+                state={item}
                 style={{ display: "block", border: "1px solid #eee", padding: 16, borderRadius: 8, background: "#fff", textDecoration: "none", color: "inherit" }}
               >
                 <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>{item.title}</div>
-                <div style={{ fontSize: 14, color: "#555" }}>
-                  {Number(item.price).toLocaleString("tr-TR")} ₺
-                </div>
+                <div style={{ fontSize: 14, color: "#555" }}>{Number(item.price).toLocaleString("tr-TR")} ₺</div>
               </Link>
             ))}
           </div>
@@ -131,19 +123,7 @@ function CategoryGrid({ items }) {
   return (
     <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
       {items.map((c) => (
-        <Link
-          key={c.id}
-          to={`/c/${c.path}`}
-          style={{
-            display: "block",
-            border: "1px solid #eee",
-            padding: 16,
-            borderRadius: 8,
-            background: "#fff",
-            textDecoration: "none",
-            color: "inherit",
-          }}
-        >
+        <Link key={c.id} to={`/c/${c.path}`} style={{ display: "block", border: "1px solid #eee", padding: 16, borderRadius: 8, background: "#fff", textDecoration: "none", color: "inherit" }}>
           <div style={{ fontSize: 12, color: "#999" }}>{c.path}</div>
           <div style={{ fontSize: 18, fontWeight: 600 }}>{c.name}</div>
         </Link>

@@ -78,17 +78,12 @@ export default function Header() {
           <span>Vitrinim</span>
         </Link>
 
-        {/* NAV */}
         <nav style={nav} aria-label="Ana gezinme">
-          <Link to="/" style={link(pathname === "/")}>
-            Anasayfa
-          </Link>
-          <Link to="/c" style={link(pathname.startsWith("/c"))}>
-  Kategoriler
-  <Link to="/new" style={link(pathname.startsWith("/new"))}>İlan Yayınla</Link>
+  <Link to="/" style={link(pathname === "/")}>Anasayfa</Link>
+  <Link to="/c" style={link(pathname.startsWith("/c"))}>Kategoriler</Link>
+  <Link to="/new" style={link(pathname === "/new")}>İlan Yayınla</Link>
+</nav>
 
-</Link>
-        </nav>
       </div>
     </header>
   );
