@@ -12,7 +12,7 @@ export default function NewListing() {
   const [imageUrl, setImageUrl] = useState("");
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
-  const publishLocal = (e) => {
+ 
   e.preventDefault();
   if (!title.trim() || !price || !categoryId) {
     setMsg("Lütfen başlık, fiyat ve kategoriyi doldurun.");
