@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Categories from "./pages/categories.jsx"; // küçük c ✅
 import ListingDetail from "./pages/ListingDetail";
-import NotFound from "./pages/NotFound";
+import NotFound from "./pages/NotFound.jsx";
 
 
 export default function App() {
