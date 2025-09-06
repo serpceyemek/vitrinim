@@ -1,8 +1,8 @@
-// src/pages/NewListing.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { writeLocalListings, getlocalListings } from "../services/localListings";
-import { categories } from "../data/categories";
+import { writeLocalListings, getLocalListings } from "../services/localListings.js"; // Büyük L
+import { categories } from "../data/categories.js";
+
 
 export default function NewListing() {
   const nav = useNavigate();
@@ -22,7 +22,7 @@ export default function NewListing() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const all = getlocalListings();
+    const all = getLocalListings();
     const newItem = {
       id: Date.now(),                // basit benzersiz id
       title: form.title.trim(),

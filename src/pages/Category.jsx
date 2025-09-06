@@ -1,10 +1,11 @@
-// src/pages/Category.jsx
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useLocation, useParams, Link } from "react-router-dom";
-import { SEED_LISTINGS, normalizeListing } from "../data/listings";
-import { categories, findCategoryByPath, getBreadcrumbByPath } from "../data/categories";
-import { getLocalListings } from "../services/localListings";
-import ListingCard from "../components/ListingCard";
+import { SEED_LISTINGS, normalizeListing } from "../data/listings.js";
+import { categories, findCategoryByPath, getBreadcrumbByPath } from "../data/categories.js";
+import { getLocalListings } from "../services/localListings.js";
+import ListingCard from "../components/ListingCard.jsx";
+
+
 
 export default function Category() {
   const { slug } = useParams();

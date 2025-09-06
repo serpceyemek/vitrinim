@@ -31,5 +31,5 @@ export function addLocalListing(item) {
 }
 
 // Eski (yanlış küçük harfli) import'lar bozulmasın diye takma adlar:
-export const getlocalListings = getLocalListings;
+export const getLocalListings = getLocalListings;
 export const writelocalListings = writeLocalListings;

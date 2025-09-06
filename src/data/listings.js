@@ -1,5 +1,5 @@
 // src/data/listings.js
-import { getlocalListings } from "../services/localListings";
+import { getLocalListings } from "../services/localListings";
 
 export const SEED_LISTINGS = [
   {
@@ -55,13 +55,13 @@ export function normalizeListing(l) {
 }
 
 export function getListingById(id) {
-  const all = [...SEED_LISTINGS, ...getlocalListings()];
+  const all = [...SEED_LISTINGS, ...getLocalListings()];
   return all.find((l) => String(l.id) === String(id)) || null;
 }
 
 // Yerel + statik ilanları birleştir, yerel olanlar öncelikli ve tekilleştir
 export function useListingPool() {
-  const local = getlocalListings() || [];
+  const local = getLocalListings() || [];
   const staticOnes = SEED_LISTINGS || [];
 
   // id -> listing tekilleştirme (önce yerel, sonra statik)
