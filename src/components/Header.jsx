@@ -8,7 +8,7 @@ export default function Header() {
     position: "sticky",
     top: 0,
     zIndex: 50,
-    background: "#f97316", // turuncu taç rengi
+    background: "#f97316",
     color: "white",
     borderBottom: "1px solid rgba(0,0,0,0.08)",
   };
@@ -41,19 +41,18 @@ export default function Header() {
   };
 
   const link = (active) => ({
-  padding: "6px 12px",
-  textDecoration: "none",
-  color: "#fff",
-  borderBottom: active ? "2px solid #fff" : "2px solid transparent",
-  marginRight: 16,
-});
+    padding: "6px 12px",
+    textDecoration: "none",
+    color: "#fff",
+    borderBottom: active ? "2px solid #fff" : "2px solid transparent",
+    marginRight: 16,
+  });
 
   return (
     <header style={wrap}>
       <div style={bar}>
-        {/* LOGO + MARKA (tamamı tıklanır) */}
+        {/* LOGO + MARKA */}
         <Link to="/" style={brand} aria-label="Vitrinim - Anasayfa">
-          {/* Turuncu taç/mini vitrin: inline SVG */}
           <svg
             width="26"
             height="26"
@@ -63,11 +62,7 @@ export default function Header() {
             focusable="false"
           >
             <rect x="2" y="4" width="20" height="16" rx="3" fill="white" />
-            <path
-              d="M5 10h14v8H5z"
-              fill="#f97316"
-              opacity="0.12"
-            />
+            <path d="M5 10h14v8H5z" fill="#f97316" opacity="0.12" />
             <path
               d="M7 7h10M7 12h5"
               stroke="#f97316"
@@ -79,11 +74,15 @@ export default function Header() {
         </Link>
 
         <nav style={nav} aria-label="Ana gezinme">
-  <Link to="/" style={link(pathname === "/")}>Anasayfa</Link>
-  <Link to="/c" style={link(pathname.startsWith("/c"))}>Kategoriler</Link>
-  <Link to="/new" style={link(pathname === "/new")}>İlan Yayınla</Link>
-</nav>
-
+          <Link to="/" style={link(pathname === "/")}>Anasayfa</Link>
+          <Link
+            to="/categories"
+            style={link(pathname.startsWith("/categories"))}
+          >
+            Kategoriler
+          </Link>
+          <Link to="/new" style={link(pathname === "/new")}>İlan Yayınla</Link>
+        </nav>
       </div>
     </header>
   );

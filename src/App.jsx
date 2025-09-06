@@ -1,30 +1,26 @@
-import React from "react";
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-// Sayfalar
-import Home from "./pages/Home";
-import ListingDetail from "./pages/ListingDetail";
-
-// Basit 404 (ayrı dosya istemedik, burada tanımlı)
-function NotFound() {
-  return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold">404</h1>
-      <p className="mt-2 text-gray-600">Aradığınız sayfa bulunamadı.</p>
-      <a href="/" className="mt-4 inline-block rounded-2xl border px-4 py-2 hover:bg-gray-50">Ana sayfa</a>
-    </div>
-  );
-}
+import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
+import Home from "./pages/Home.jsx";
+import Categories from "./pages/Categories.jsx";
+import Category from "./pages/Category.jsx";
+import ListingDetail from "./pages/ListingDetail.jsx";
+import NewListing from "./pages/NewListing.jsx";
 
 export default function App() {
   return (
     <Router>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/c/:slug" element={<Category />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
-        {/* Kategori sayfasını ekleyeceksek daha sonra: <Route path="/category/:slug" element={<Category />} /> */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="/new" element={<NewListing />} />
+        <Route path="*" element={<div className="container" style={{ padding: "24px 0" }}>Sayfa bulunamadı.</div>} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
