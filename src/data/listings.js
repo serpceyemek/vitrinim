@@ -1,5 +1,5 @@
 // src/data/listings.js
-import { getLocalListings } from "../services/localListings.js"; // ← .js uzantısı
+import { getLocalListings } from "../services/localListings.js";
 
 // Statik tohum veriler
 export const SEED_LISTINGS = [
@@ -8,7 +8,6 @@ export const SEED_LISTINGS = [
   { id: 1003, title: "Tertemiz iPhone 14 Pro 256GB",     price: 38990,   image: "", categoryId: 4, categoryPath: [3, 4], postedAt: "2025-08-30", location: "Konak, İzmir",  isFeatured: false },
 ];
 
-// Tekil ilan normalize edici
 export function normalizeListing(l) {
   return {
     id: l.id,
@@ -24,7 +23,6 @@ export function normalizeListing(l) {
   };
 }
 
-// ID ile tek ilan
 export function getListingById(id) {
   const all = [...SEED_LISTINGS, ...getLocalListings()];
   return all.find((l) => String(l.id) === String(id)) || null;
@@ -43,8 +41,8 @@ export function useListingPool() {
   return Array.from(byId.values());
 }
 
-// 👉 Named export bekleyen yerler için stabil bir dizi verelim
+// Named export bekleyen yerler için dizi alias
 export const listings = SEED_LISTINGS;
 
-// 👉 Uyumluluk için default export da ver (hala bir yerde default import varsa build kırılmasın)
+// Uyumluluk için default export
 export default listings;
