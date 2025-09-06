@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { writeLocalListings, getLocalListings } from "../services/localListings.js"; // Büyük L
+import { writeLocalListings, getLocalListings } from "../services/localListings.js";
 import { categories } from "../data/categories.js";
+
 
 
 export default function NewListing() {
