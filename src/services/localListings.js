@@ -1,35 +1,26 @@
 // src/services/localListings.js
-const KEY = "vitrinim_local_listings";
+const STORAGE_KEY = "local_listings_v1";
 
+// LocalStorage'tan listeyi oku (güvenli)
 export function getLocalListings() {
   try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) : [];
+    const raw = typeof localStorage !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
   } catch {
     return [];
   }
 }
 
-export function writeLocalListings(list) {
+// Listeyi LocalStorage'a yaz (güvenli)
+export function writeLocalListings(listings) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(list));
-  } catch {}
+    const arr = Array.isArray(listings) ? listings : [];
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
-
-export function addLocalListing(item) {
-  const list = getLocalListings();
-  const id = "local-" + Date.now();
-  const record = {
-    ...item,
-    id,
-    createdAt: new Date().toISOString(),
-    isLocal: true,
-  };
-  list.unshift(record);
-  writeLocalListings(list);
-  return record;
-}
-
-// Eski (yanlış küçük harfli) import'lar bozulmasın diye takma adlar:
-export const getLocalListings = getLocalListings;
-export const writelocalListings = writeLocalListings;
