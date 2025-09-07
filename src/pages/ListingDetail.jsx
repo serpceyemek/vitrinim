@@ -1,11 +1,12 @@
 // src/pages/ListingDetail.jsx
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { getListingById } from "../data/listings.js";
+import { getListingById, useListingPool } from "../data/listings.js";
 
 export default function ListingDetail() {
   const { id } = useParams();
   const listing = getListingById(id);
+  const pool = useListingPool();
 
   if (!listing) {
     return (
@@ -27,6 +28,18 @@ export default function ListingDetail() {
     listing.image && String(listing.image).trim()
       ? listing.image
       : "https://via.placeholder.com/1000x560?text=Vitrinim";
+
+  // Benzerler: aynı kategoriId, kendisi hariç, ilk 6
+  const similars = Array.isArray(pool)
+    ? pool
+        .filter(
+          (x) =>
+            String(x.id) !== String(listing.id) &&
+            x.categoryId &&
+            String(x.categoryId) === String(listing.categoryId)
+        )
+        .slice(0, 6)
+    : [];
 
   return (
     <div style={{ maxWidth: 900, margin: "40px auto", padding: 16 }}>
@@ -64,6 +77,47 @@ export default function ListingDetail() {
       <p style={{ color: "#4b5563" }}>
         Bu sayfa örnek detay şablonudur. İçerikleri daha sonra zenginleştireceğiz.
       </p>
+
+      {similars.length > 0 && (
+        <>
+          <h3 style={{ marginTop: 24 }}>Benzer ilanlar</h3>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: 12,
+            }}
+          >
+            {similars.map((s) => (
+              <Link
+                key={`sim-${s.id}`}
+                to={`/ilan/${s.id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <div
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 12,
+                    padding: 12,
+                    background: "#fff",
+                  }}
+                >
+                  <div style={{ fontWeight: 600, marginBottom: 6 }}>
+                    {s.title}
+                  </div>
+                  <div style={{ color: "#6b7280", fontSize: 13 }}>
+                    {new Intl.NumberFormat("tr-TR", {
+                      style: "currency",
+                      currency: "TRY",
+                      maximumFractionDigits: 0,
+                    }).format(Number(s.price) || 0)}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
