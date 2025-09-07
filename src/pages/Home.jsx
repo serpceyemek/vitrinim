@@ -1,8 +1,8 @@
 // src/pages/Home.jsx
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import ListingCard from "../components/ListingCard.jsx";
-import { categories as CATEGORIES } from "../data/categories.js";
+import { categories as CATEGORIES, topLevelCategories } from "../data/categories.js";
 import { listings as LISTINGS_RAW } from "../data/listings.js";
 
 // Veriyi güvenle normalize et
@@ -48,6 +48,9 @@ export default function Home() {
     return (Number(a.price) - Number(b.price)) * factor;
   });
 
+  // Ana sayfada göstereceğimiz üst seviye chip'ler
+  const TOPS = topLevelCategories();
+
   return (
     <div style={{ maxWidth: 1200, margin: "40px auto", padding: 16 }}>
       <h2>Öne Çıkan İlanlar</h2>
@@ -79,6 +82,27 @@ export default function Home() {
           <option value="title-asc">Başlık (A→Z)</option>
           <option value="title-desc">Başlık (Z→A)</option>
         </select>
+      </div>
+
+      {/* Kategori chip'leri (Home'da) */}
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 16px" }}>
+        {TOPS.map((c) => (
+          <Link
+            key={`chip-${c.id}`}
+            to={`/?cat=${c.id}`}
+            style={{
+              padding: "6px 10px",
+              border: "1px solid #e5e7eb",
+              borderRadius: 999,
+              textDecoration: "none",
+              color: "inherit",
+              background: "#fff",
+              fontSize: 13,
+            }}
+          >
+            {c.name}
+          </Link>
+        ))}
       </div>
 
       {/* İlan listesi */}
