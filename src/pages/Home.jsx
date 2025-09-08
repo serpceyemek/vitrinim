@@ -1,126 +1,127 @@
 // src/pages/Home.jsx
-import React, { useState } from "react";
-import { useLocation, Link } from "react-router-dom";
-import ListingCard from "../components/ListingCard.jsx";
-import { categories as CATEGORIES, topLevelCategories } from "../data/categories.js";
-import { listings as LISTINGS_RAW } from "../data/listings.js";
-
-// Veriyi güvenle normalize et
-const LISTINGS = (Array.isArray(LISTINGS_RAW) ? LISTINGS_RAW : []).map((it, idx) => ({
-  id: it?.id ?? idx,
-  title: String(it?.title ?? "İsimsiz İlan"),
-  price: Number.isFinite(Number(it?.price)) ? Number(it.price) : 0,
-  image: it?.image ?? null,
-  location: it?.location ?? "",
-  categoryId: it?.categoryId ?? null,
-  ...it,
-}));
+import React, { useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { categories } from "../data/categories";
+import { useListingPool } from "../data/listings";
+import ListingCard from "../components/ListingCard";
 
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("price-asc");
   const location = useLocation();
-
-  // URL: /?cat=<id>
   const params = new URLSearchParams(location.search);
-  const activeCat = params.get("cat"); // string | null
+  const selectedCat = params.get("cat"); // /?cat=5 gibi
 
-  // Filtreleme
-  const q = (query || "").trim().toLowerCase();
-  let results = LISTINGS.filter((it) =>
-    String(it.title).toLowerCase().includes(q)
-  );
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState("price-asc"); // price-asc | price-desc | newest
 
-  if (activeCat) {
-    results = results.filter(
-      (it) => String(it.categoryId) === String(activeCat)
-    );
-  }
+  // ---- GÜVENLİ HAVUZ (beyaz ekran/sabitlenme koruması)
+  const pool = useListingPool() || [];
+  const safePool = Array.isArray(pool) ? pool : [];
 
-  // Sıralama
-  const [key, dir] = String(sort || "price-asc").split("-");
-  const factor = dir === "desc" ? -1 : 1;
+  // ---- Filtre + Sıralama (güvenli)
+  const filtered = useMemo(() => {
+    let arr = safePool.slice();
 
-  results.sort((a, b) => {
-    if (key === "title") {
-      return String(a.title).localeCompare(String(b.title)) * factor;
+    // Kategori filtresi (categoryPath veya categoryId üzerinden)
+    if (selectedCat) {
+      const cid = Number(selectedCat);
+      arr = arr.filter((l) =>
+        Array.isArray(l?.categoryPath)
+          ? l.categoryPath.includes(cid)
+          : String(l?.categoryId) === String(cid)
+      );
     }
-    return (Number(a.price) - Number(b.price)) * factor;
-  });
 
-  // Ana sayfada göstereceğimiz üst seviye chip'ler
-  const TOPS = topLevelCategories();
+    // Arama
+    if (q.trim()) {
+      const s = q.toLowerCase();
+      arr = arr.filter((l) => String(l?.title ?? "").toLowerCase().includes(s));
+    }
+
+    // Sıralama
+    if (sort === "price-asc") {
+      arr.sort((a, b) => (a?.price ?? 0) - (b?.price ?? 0));
+    } else if (sort === "price-desc") {
+      arr.sort((a, b) => (b?.price ?? 0) - (a?.price ?? 0));
+    } else if (sort === "newest") {
+      arr.sort(
+        (a, b) =>
+          new Date(b?.postedAt || 0).getTime() -
+          new Date(a?.postedAt || 0).getTime()
+      );
+    }
+
+    return arr;
+  }, [safePool, selectedCat, q, sort]);
+
+  // İsteğe bağlı: 6 öğeyle sınırla (özel istek vardı)
+  const toShow = filtered.slice(0, 6);
 
   return (
-    <div style={{ maxWidth: 1200, margin: "40px auto", padding: 16 }}>
-      <h2>Öne Çıkan İlanlar</h2>
-
-      {/* Aktif kategori etiketi */}
-      {activeCat && (
-        <div style={{ margin: "8px 0", color: "#6b7280", fontSize: 14 }}>
-          Aktif kategori:{" "}
-          {CATEGORIES.find((c) => String(c.id) === String(activeCat))?.name ||
-            activeCat}
-        </div>
-      )}
+    <div style={{ padding: "32px 24px", maxWidth: 1200, margin: "0 auto" }}>
+      <h2 style={{ marginBottom: 16 }}>Öne Çıkan İlanlar</h2>
 
       {/* Arama + Sıralama */}
-      <div style={{ display: "flex", gap: 12, margin: "16px 0" }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
         <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
           placeholder="Ara..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 1, padding: 8 }}
+          style={{
+            flex: 1,
+            padding: "10px 12px",
+            borderRadius: 8,
+            border: "1px solid #ddd",
+          }}
         />
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          style={{ padding: 8 }}
+          style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #ddd" }}
         >
           <option value="price-asc">Fiyat (Artan)</option>
           <option value="price-desc">Fiyat (Azalan)</option>
-          <option value="title-asc">Başlık (A→Z)</option>
-          <option value="title-desc">Başlık (Z→A)</option>
+          <option value="newest">En Yeni</option>
         </select>
       </div>
 
-      {/* Kategori chip'leri (Home'da) */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", margin: "8px 0 16px" }}>
-        {TOPS.map((c) => (
-          <Link
-            key={`chip-${c.id}`}
-            to={`/?cat=${c.id}`}
-            style={{
-              padding: "6px 10px",
-              border: "1px solid #e5e7eb",
-              borderRadius: 999,
-              textDecoration: "none",
-              color: "inherit",
-              background: "#fff",
-              fontSize: 13,
-            }}
-          >
-            {c.name}
-          </Link>
-        ))}
+      {/* Üst seviye kategori çipleri */}
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
+        {categories
+          .filter((c) => !c.parentId)
+          .map((c) => {
+            const active = String(selectedCat) === String(c.id);
+            return (
+              <Link
+                key={c.id}
+                to={active ? "/" : `/?cat=${c.id}`}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: 12,
+                  border: "1px solid #ddd",
+                  background: active ? "#f0f0f0" : "white",
+                  textDecoration: "none",
+                  color: "#222",
+                  fontSize: 14,
+                }}
+              >
+                {c.name}
+              </Link>
+            );
+          })}
       </div>
 
-      {/* İlan listesi */}
-      {results.length === 0 ? (
-        <p>Aramana uygun sonuç bulunamadı.</p>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-            gap: 16,
-          }}
-        >
-          {results.map((item) => (
-            <ListingCard key={item.id} item={item} />
-          ))}
-        </div>
-      )}
+      {/* Kartlar */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: 16,
+        }}
+      >
+        {toShow.map((l) => (
+          <ListingCard key={l.id} listing={l} />
+        ))}
+      </div>
     </div>
   );
 }
