@@ -1,123 +1,51 @@
 // src/pages/ListingDetail.jsx
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { getListingById, useListingPool } from "../data/listings.js";
+import { getListingById } from "../data/listings";
 
 export default function ListingDetail() {
   const { id } = useParams();
   const listing = getListingById(id);
-  const pool = useListingPool();
 
+  // Koruma: veri yoksa beyaz ekran yerine kibar mesaj
   if (!listing) {
     return (
-      <div style={{ maxWidth: 900, margin: "40px auto", padding: 16 }}>
-        <h2>İlan bulunamadı</h2>
-        <p>Aradığınız ilan yayında değil ya da silinmiş olabilir.</p>
-        <Link to="/" style={{ color: "#2563eb" }}>Ana sayfaya dön</Link>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
+        <p>İlan bulunamadı.</p>
+        <Link to="/">Ana sayfaya dön</Link>
       </div>
     );
   }
 
-  const priceText = new Intl.NumberFormat("tr-TR", {
-    style: "currency",
-    currency: "TRY",
-    maximumFractionDigits: 0,
-  }).format(Number(listing.price) || 0);
-
-  const imgUrl =
-    listing.image && String(listing.image).trim()
-      ? listing.image
-      : "https://via.placeholder.com/1000x560?text=Vitrinim";
-
-  // Benzerler: aynı kategoriId, kendisi hariç, ilk 6
-  const similars = Array.isArray(pool)
-    ? pool
-        .filter(
-          (x) =>
-            String(x.id) !== String(listing.id) &&
-            x.categoryId &&
-            String(x.categoryId) === String(listing.categoryId)
-        )
-        .slice(0, 6)
-    : [];
-
   return (
-    <div style={{ maxWidth: 900, margin: "40px auto", padding: 16 }}>
-      <Link to="/" style={{ textDecoration: "none", color: "#2563eb" }}>
-        ← Ana sayfa
-      </Link>
-
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
+      {/* Görsel alanı (şimdilik boş placeholder) */}
       <div
         style={{
           width: "100%",
-          aspectRatio: "16 / 9",
-          backgroundImage: `url(${imgUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          height: 360,
+          background: "#f3f3f3",
+          border: "1px solid #eee",
           borderRadius: 12,
-          margin: "16px 0",
-          border: "1px solid #e5e7eb",
+          marginBottom: 16,
         }}
       />
 
-      <h2 style={{ margin: "0 0 8px" }}>{listing.title || "İlan"}</h2>
-
-      <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 16 }}>
-        <strong style={{ fontSize: 20 }}>{priceText}</strong>
-        {listing.location ? (
-          <span style={{ color: "#6b7280" }}>{listing.location}</span>
-        ) : null}
-        {listing.postedAt ? (
-          <span style={{ color: "#9ca3af" }}>
-            {new Date(listing.postedAt).toLocaleDateString("tr-TR")}
-          </span>
-        ) : null}
+      <h2 style={{ margin: "0 0 8px" }}>{listing.title}</h2>
+      <div style={{ color: "#666", marginBottom: 8 }}>
+        ₺{Number(listing.price || 0).toLocaleString("tr-TR")} &nbsp;•&nbsp;{" "}
+        {listing.location || "—"} &nbsp;•&nbsp;{" "}
+        {(listing.postedAt || "").slice(0, 10)}
       </div>
 
-      <p style={{ color: "#4b5563" }}>
-        Bu sayfa örnek detay şablonudur. İçerikleri daha sonra zenginleştireceğiz.
+      <p>
+        Bu sayfa örnek detay şablonudur. İçerikleri daha sonra
+        zenginleştireceğiz.
       </p>
 
-      {similars.length > 0 && (
-        <>
-          <h3 style={{ marginTop: 24 }}>Benzer ilanlar</h3>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: 12,
-            }}
-          >
-            {similars.map((s) => (
-              <Link
-                key={`sim-${s.id}`}
-                to={`/ilan/${s.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div
-                  style={{
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 12,
-                    padding: 12,
-                    background: "#fff",
-                  }}
-                >
-                  <div style={{ fontWeight: 600, marginBottom: 6 }}>
-                    {s.title}
-                  </div>
-                  <div style={{ color: "#6b7280", fontSize: 13 }}>
-                    {new Intl.NumberFormat("tr-TR", {
-                      style: "currency",
-                      currency: "TRY",
-                      maximumFractionDigits: 0,
-                    }).format(Number(s.price) || 0)}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </>
-      )}
+      <p style={{ marginTop: 16 }}>
+        <Link to="/">← Ana sayfaya dön</Link>
+      </p>
     </div>
   );
 }
