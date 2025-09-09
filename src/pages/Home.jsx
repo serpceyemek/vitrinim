@@ -54,10 +54,54 @@ export default function Home() {
   const chips = topLevelCategories();
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
-      <h1 style={{ marginBottom: 12 }}>Öne Çıkan İlanlar</h1>
+    <div
+  style={{
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+    margin: "12px 0 24px",
+    flexWrap: "wrap",
+  }}
+>
+  {chips.map((c) => {
+    const isActive = String(catId) === String(c.id); // seçili kategori mi?
+    return (
+      <Link
+        key={c.id}
+        to={`/?cat=${c.id}`}
+        style={{
+          padding: "8px 12px",
+          borderRadius: 12,
+          border: "1px solid #ddd",
+          textDecoration: "none",
+          background: isActive ? "#111" : "#fff",
+          color: isActive ? "#fff" : "#111",
+          lineHeight: 1.1,
+        }}
+      >
+        {c.name}
+      </Link>
+    );
+  })}
 
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+  {catId && (
+    <Link
+      to="/"
+      style={{
+        padding: "8px 12px",
+        borderRadius: 12,
+        border: "1px solid #ddd",
+        textDecoration: "none",
+        background: "#fff",
+        color: "#111",
+        lineHeight: 1.1,
+      }}
+    >
+      Tümü
+    </Link>
+  )}
+</div>
+
         <input
           type="search"
           placeholder="Ara..."
