@@ -1,79 +1,65 @@
 // src/pages/Home.jsx
 import React, { useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ListingCard from "../components/ListingCard";
-import { useListingPool } from "../data/listings";
 import { topLevelCategories } from "../data/categories";
+import { useListingPool } from "../data/listings";
 
 export default function Home() {
-  // Arama & sıralama (kontrollü)
-  const [q, setQ] = useState("");
-  const [sort, setSort] = useState("priceAsc"); // priceAsc | priceDesc | newest
+  const pool = useListingPool();
 
-  // URL'den kategori (?cat=ID)
-  const [params] = useSearchParams();
-  const catParam = params.get("cat");
+  // URL'deki ?cat parametresi
+  const [sp, setSp] = useSearchParams();
+  const catParam = sp.get("cat");
   const catId = catParam ? Number(catParam) : null;
 
-  // Tüm ilanlar (seed + localStorage), her durumda dizi
-  const basePool = useListingPool();
-  const pool = Array.isArray(basePool) ? basePool : [];
+  // Arama & sıralama
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState("price_asc"); // price_asc | price_desc | newest
 
-  // Listeyi hesapla (filtre + arama + sıralama)
   const filtered = useMemo(() => {
-    let arr = pool;
+    let arr = [...pool];
 
-    // kategori filtresi
+    // kategori filtre
     if (catId) {
-      arr = arr.filter((l) => {
-        const path = Array.isArray(l?.categoryPath)
-          ? l.categoryPath
-          : l?.categoryId
-          ? [l.categoryId]
-          : [];
-        return path.map(Number).includes(catId);
-      });
+      arr = arr.filter(
+        (l) =>
+          l.categoryId === catId ||
+          (Array.isArray(l.categoryPath) && l.categoryPath.includes(catId))
+      );
     }
 
     // arama
-    const s = q.trim().toLowerCase();
-    if (s) {
-      arr = arr.filter((l) => String(l?.title ?? "").toLowerCase().includes(s));
+    const qq = q.trim().toLowerCase();
+    if (qq) {
+      arr = arr.filter(
+        (l) =>
+          String(l.title || "").toLowerCase().includes(qq) ||
+          String(l.location || "").toLowerCase().includes(qq)
+      );
     }
 
     // sıralama
-    if (sort === "priceAsc") {
-      arr = [...arr].sort((a, b) => (a?.price ?? 0) - (b?.price ?? 0));
-    } else if (sort === "priceDesc") {
-      arr = [...arr].sort((a, b) => (b?.price ?? 0) - (a?.price ?? 0));
+    if (sort === "price_asc") {
+      arr.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (sort === "price_desc") {
+      arr.sort((a, b) => Number(b.price) - Number(a.price));
     } else if (sort === "newest") {
-      arr = [...arr].sort(
+      arr.sort(
         (a, b) =>
-          new Date(b?.postedAt || 0).getTime() -
-          new Date(a?.postedAt || 0).getTime()
+          new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
       );
     }
 
     return arr;
   }, [pool, catId, q, sort]);
 
-  // Chip stilleri
-  const chipBase = {
-    display: "inline-block",
-    padding: "8px 12px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    textDecoration: "none",
-    color: "#222",
-    lineHeight: 1.1,
-  };
-  const chipActive = { background: "#111", color: "#fff", borderColor: "#111" };
+  const chips = topLevelCategories();
 
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
       <h1 style={{ marginBottom: 12 }}>Öne Çıkan İlanlar</h1>
 
-      {/* Arama + Sıralama */}
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <input
           type="search"
@@ -96,47 +82,56 @@ export default function Home() {
             border: "1px solid #ddd",
           }}
         >
-          <option value="priceAsc">Fiyat (Artan)</option>
-          <option value="priceDesc">Fiyat (Azalan)</option>
+          <option value="price_asc">Fiyat (Artan)</option>
+          <option value="price_desc">Fiyat (Azalan)</option>
           <option value="newest">En Yeni</option>
         </select>
       </div>
 
       {/* Kategori çipleri */}
-      <div style={{ display: "flex", gap: 12, margin: "16px 0 24px", flexWrap: "wrap" }}>
-        <Link
-          to="/"
-          style={{ ...chipBase, ...(catId == null ? chipActive : null) }}
+      <div style={{ display: "flex", gap: 10, margin: "14px 0 8px" }}>
+        <button
+          onClick={() => setSp((prev) => { prev.delete("cat"); return prev; })}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 999,
+            border: "1px solid #ddd",
+            background: catId ? "#fff" : "#111",
+            color: catId ? "#111" : "#fff",
+            cursor: "pointer",
+          }}
         >
           Tümü
-        </Link>
-        {topLevelCategories().map((c) => (
-          <Link
+        </button>
+
+        {chips.map((c) => (
+          <button
             key={c.id}
-            to={`/?cat=${c.id}`}
-            style={{ ...chipBase, ...(catId === c.id ? chipActive : null) }}
+            onClick={() => setSp((prev) => { prev.set("cat", String(c.id)); return prev; })}
+            style={{
+              padding: "8px 12px",
+              borderRadius: 999,
+              border: "1px solid #ddd",
+              background: catId === c.id ? "#111" : "#fff",
+              color: catId === c.id ? "#fff" : "#111",
+              cursor: "pointer",
+            }}
           >
             {c.name}
-          </Link>
+          </button>
         ))}
       </div>
 
-      {/* Liste */}
-      {filtered.length === 0 ? (
-        <p style={{ marginTop: 12, color: "#666" }}>
-          Gösterilecek ilan bulunamadı.
-        </p>
-      ) : null}
-
+      {/* Grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 16,
-          marginTop: 16,
+          marginTop: 12,
         }}
       >
-        {filtered.slice(0, 30).map((l) => (
+        {filtered.map((l) => (
           <ListingCard key={l.id} listing={l} />
         ))}
       </div>

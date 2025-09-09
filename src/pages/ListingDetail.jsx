@@ -5,7 +5,9 @@ import { getListingById } from "../data/listings";
 
 export default function ListingDetail() {
   const { id } = useParams();
-  const listing = getListingById(id);
+const listing = getListingById(id);
+if (!listing) return <p>İlan bulunamadı.</p>;
+
 
   // Koruma: veri yoksa beyaz ekran yerine kibar mesaj
   if (!listing) {
