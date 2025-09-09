@@ -29,6 +29,17 @@ export default function Home() {
           : l.categoryId
           ? [l.categoryId]
           : [];
+          // basit chip stilleri
+const chipBase = {
+  display: "inline-block",
+  padding: "8px 12px",
+  borderRadius: 8,
+  border: "1px solid #ddd",
+  textDecoration: "none",
+  color: "#222",
+};
+const chipActive = { background: "#111", color: "#fff", borderColor: "#111" };
+
         return path.map(Number).includes(catId);
       });
     }
@@ -54,18 +65,66 @@ export default function Home() {
   const chips = topLevelCategories();
 
   return (
+  <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+    <h1 style={{ marginBottom: 12 }}>Öne Çıkan İlanlar</h1>
+
+    {/* Arama + Sıralama */}
+    <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <input
+        type="search"
+        placeholder="Ara..."
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "1px solid #ddd" }}
+      />
+      <select
+        value={sort}
+        onChange={(e) => setSort(e.target.value)}
+        style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #ddd" }}
+      >
+        <option value="price-asc">Fiyat (Artan)</option>
+        <option value="price-desc">Fiyat (Azalan)</option>
+        <option value="newest">En Yeni</option>
+      </select>
+    </div>
+
+    {/* Kategori çipleri */}
+    <div style={{ display: "flex", gap: 12, margin: "16px 0 24px" }}>
+      <Link
+        to="/"
+        style={{ ...chipBase, ...(catId == null ? chipActive : null) }}
+      >
+        Tümü
+      </Link>
+
+      {topLevelCategories().map((c) => (
+        <Link
+          key={c.id}
+          to={`/?cat=${c.id}`}
+          style={{ ...chipBase, ...(catId === c.id ? chipActive : null) }}
+        >
+          {c.name}
+        </Link>
+      ))}
+    </div>
+
+    {/* Liste */}
     <div
-  style={{
-    display: "flex",
-    gap: 12,
-    alignItems: "center",
-    margin: "12px 0 24px",
-    flexWrap: "wrap",
-  }}
->
-  {chips.map((c) => {
-    const isActive = String(catId) === String(c.id); // seçili kategori mi?
-    return (
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+        gap: 24,
+      }}
+    >
+      {filtered.length === 0 ? (
+        <p>Gösterilecek ilan bulunamadı.</p>
+      ) : (
+        filtered.slice(0, 30).map((l) => <ListingCard key={l.id} listing={l} />)
+      )}
+    </div>
+  </div>
+);
+
       <Link
         key={c.id}
         to={`/?cat=${c.id}`}
