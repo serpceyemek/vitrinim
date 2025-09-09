@@ -1,66 +1,61 @@
 // src/components/ListingCard.jsx
-import React from "react";
 import { Link } from "react-router-dom";
 
-export default function ListingCard({ item }) {
-  if (!item) return null;
+export default function ListingCard({ listing }) {
+  if (!listing) return null;
 
-  const priceNum = Number.isFinite(Number(item.price)) ? Number(item.price) : 0;
+  const price = Number(listing.price) || 0;
   const priceText = new Intl.NumberFormat("tr-TR", {
     style: "currency",
     currency: "TRY",
     maximumFractionDigits: 0,
-  }).format(priceNum);
+  }).format(price);
 
-  const imgUrl =
-    item.image && String(item.image).trim()
-      ? item.image
-      : "https://via.placeholder.com/400x240?text=Vitrinim";
+  const dateText = listing.postedAt
+    ? new Date(listing.postedAt).toLocaleDateString("tr-TR")
+    : "";
 
   return (
     <Link
-      to={`/ilan/${item.id}`}
-      style={{ textDecoration: "none", color: "inherit" }}
+      to={`/ilan/${listing.id}`}
+      className="card"
+      style={{
+        display: "block",
+        textDecoration: "none",
+        color: "inherit",
+        border: "1px solid #e5e7eb",
+        borderRadius: 12,
+        padding: 16,
+      }}
     >
       <div
         style={{
-          border: "1px solid #e5e7eb",
-          borderRadius: 12,
+          width: "100%",
+          aspectRatio: "16 / 9",
+          borderRadius: 10,
+          background: "#f5f5f5",
+          marginBottom: 12,
           overflow: "hidden",
-          background: "#fff",
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            aspectRatio: "16 / 9",
-            backgroundImage: `url(${imgUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <div style={{ padding: 12 }}>
-          <h3 style={{ margin: "0 0 6px", fontSize: 16, lineHeight: 1.3 }}>
-            {item.title || "İsimsiz İlan"}
-          </h3>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontWeight: 600,
-            }}
-          >
-            <span>{priceText}</span>
-            {item.location ? (
-              <span
-                style={{ fontWeight: 400, color: "#6b7280", fontSize: 13 }}
-              >
-                {item.location}
-              </span>
-            ) : null}
-          </div>
-        </div>
+        {listing.image ? (
+          <img
+            src={listing.image}
+            alt={listing.title || "İlan görseli"}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : null}
+      </div>
+
+      <h3 style={{ fontSize: 16, margin: "0 0 6px 0" }}>
+        {listing.title || "Başlıksız ilan"}
+      </h3>
+
+      <div style={{ fontWeight: 600, marginBottom: 6 }}>{priceText}</div>
+
+      <div style={{ fontSize: 12, color: "#666" }}>
+        {listing.location || "—"}
+        {dateText ? ` · ${dateText}` : ""}
       </div>
     </Link>
   );
