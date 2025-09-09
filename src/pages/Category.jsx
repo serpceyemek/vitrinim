@@ -2,11 +2,9 @@
 import React, { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import ListingCard from "../components/ListingCard";
-import {
-  findCategoryByPath,
-  getBreadcrumbByPath,
-} from "../data/categories";
+import { findCategoryByPath, getBreadcrumbByPath } from "../data/categories";
 import { useListingPool } from "../data/listings";
+
 
 export default function Category() {
   const { path } = useParams();

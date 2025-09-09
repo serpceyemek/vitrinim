@@ -5,6 +5,7 @@ import ListingCard from "../components/ListingCard";
 import { topLevelCategories } from "../data/categories";
 import { useListingPool } from "../data/listings";
 
+
 export default function Home() {
   const pool = useListingPool();
 
