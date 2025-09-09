@@ -6,23 +6,22 @@ import { useListingPool } from "../data/listings";
 import { topLevelCategories } from "../data/categories";
 
 export default function Home() {
-  // Arama & sıralama: kontrollü bileşenler (string ile başlat)
+  // kontrollü input/select
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("priceAsc");
 
-  // URL'den kategori filtresi (?cat=ID)
+  // kategori (?cat=ID)
   const [params] = useSearchParams();
   const catParam = params.get("cat");
   const catId = catParam ? Number(catParam) : null;
 
-  // Tüm ilanlar (seed + localStorage tekilleştirilmiş)
-  const pool = useListingPool();
+  // >>> burası kritik: her durumda dizi olsun
+  const basePool = useListingPool();
+  const pool = Array.isArray(basePool) ? basePool : [];
 
-  // Listeyi hesapla
   const filtered = useMemo(() => {
     let arr = pool;
 
-    // kategori filtresi
     if (catId) {
       arr = arr.filter((l) => {
         const path = Array.isArray(l.categoryPath)
@@ -34,13 +33,11 @@ export default function Home() {
       });
     }
 
-    // arama filtresi
     const qNorm = q.trim().toLowerCase();
     if (qNorm) {
       arr = arr.filter((l) => (l.title || "").toLowerCase().includes(qNorm));
     }
 
-    // sıralama
     if (sort === "priceAsc") {
       arr = [...arr].sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (sort === "priceDesc") {
@@ -60,11 +57,7 @@ export default function Home() {
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
       <h1 style={{ marginBottom: 12 }}>Öne Çıkan İlanlar</h1>
 
-      {/* Arama + Sıralama */}
-      <div
-        className="toolbar"
-        style={{ display: "flex", gap: 12, alignItems: "center" }}
-      >
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <input
           type="search"
           placeholder="Ara..."
@@ -92,7 +85,6 @@ export default function Home() {
         </select>
       </div>
 
-      {/* Kategori çipleri */}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 16 }}>
         {chips.map((c) => (
           <Link
@@ -112,7 +104,13 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Kart ızgarası */}
+      {/* liste boşsa mesaj göster */}
+      {filtered.length === 0 ? (
+        <p style={{ marginTop: 24, color: "#666" }}>
+          Gösterilecek ilan bulunamadı.
+        </p>
+      ) : null}
+
       <div
         style={{
           display: "grid",
