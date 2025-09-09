@@ -1,66 +1,83 @@
 // src/data/listings.js
 import { getLocalListings } from "../services/localListings";
 
-// Örnek (seed) ilanlar
+/** Örnek (seed) ilanlar – tüm üst kategoriler kapsansın diye 1..6 */
 export const SEED_LISTINGS = [
-  {
-    id: 1001,
-    title: "Freelance Web Geliştirme Hizmeti",
-    price: 15000,
-    image: "",
-    categoryId: 5,          // Hizmetler
-    categoryPath: [5],
-    postedAt: "2025-09-01",
-    location: "Online",
-    isFeatured: true,
-  },
+  // 1) Emlak
   {
     id: 1002,
     title: "Merkezde 2+1 Geniş Daire",
     price: 2750000,
     image: "",
-    categoryId: 1,          // Emlak
+    categoryId: 1,
     categoryPath: [1],
     postedAt: "2025-08-28",
     location: "Kadıköy, İstanbul",
     isFeatured: true,
   },
+  // 2) Vasıta
+  {
+    id: 2001,
+    title: "Temiz Renault Clio 1.3, 2019, 85.000 km",
+    price: 465000,
+    image: "",
+    categoryId: 2,
+    categoryPath: [2],
+    postedAt: "2025-09-03",
+    location: "Keçiören, Ankara",
+    isFeatured: true,
+  },
+  // 3) İkinci El & Alışveriş  (üst)
+  {
+    id: 3001,
+    title: "Sıfıra yakın kamp çadırı (2 kişilik)",
+    price: 2500,
+    image: "",
+    categoryId: 3,
+    categoryPath: [3],
+    postedAt: "2025-09-05",
+    location: "Nilüfer, Bursa",
+    isFeatured: false,
+  },
+  // 4) Elektronik (İkinci El altında)
   {
     id: 1003,
     title: "Tertemiz iPhone 14 Pro 256GB",
     price: 38990,
     image: "",
-    categoryId: 4,          // Elektronik (üstü: İkinci El & Alışveriş = 3)
-    categoryPath: [3, 4],
+    categoryId: 4,
+    categoryPath: [3, 4], // üst: ikinci-el-alisveris, alt: elektronik
     postedAt: "2025-08-30",
     location: "Konak, İzmir",
     isFeatured: false,
   },
+  // 5) Hizmetler
   {
-    id: 1004,
-    title: "Temiz Hatchback 2016",
-    price: 465000,
+    id: 1001,
+    title: "Freelance Web Geliştirme Hizmeti",
+    price: 15000,
     image: "",
-    categoryId: 2,          // Vasıta
-    categoryPath: [2],
-    postedAt: "2025-09-02",
-    location: "Keçiören, Ankara",
-    isFeatured: false,
-  },
-  {
-    id: 1005,
-    title: "Matematik Özel Ders (LGS/AYT)",
-    price: 600,
-    image: "",
-    categoryId: 6,          // Eğitim
-    categoryPath: [6],
-    postedAt: "2025-09-03",
+    categoryId: 5,
+    categoryPath: [5],
+    postedAt: "2025-09-01",
     location: "Online",
-    isFeatured: false,
+    isFeatured: true,
+  },
+  // 6) Eğitim
+  {
+    id: 6001,
+    title: "Birebir Matematik Özel Ders (LGS-YKS)",
+    price: 500,
+    image: "",
+    categoryId: 6,
+    categoryPath: [6],
+    postedAt: "2025-09-06",
+    location: "Bornova, İzmir",
+    isFeatured: true,
   },
 ];
 
-// İlanı tek biçime çevir
+/** İlan normalize */
 export function normalizeListing(l) {
   return {
     id: l.id,
@@ -78,31 +95,21 @@ export function normalizeListing(l) {
   };
 }
 
-// Tek ilan getir (ID ile)
+/** ID ile ilan bul */
 export function getListingById(id) {
-  const pool = useListingPool();
-  return pool.find((l) => String(l.id) === String(id)) || null;
+  const all = [...SEED_LISTINGS, ...getLocalListings()];
+  return all.find((l) => String(l.id) === String(id)) || null;
 }
 
-// Yerel + seed ilanları birleştir; yerel olanlar öncelikli ve tekilleştirilmiş
+/** Yerel + statik havuz (tekilleştirilmiş, yerel öncelikli) */
 export function useListingPool() {
-  const localArr = (() => {
-    try {
-      const v = getLocalListings?.();
-      return Array.isArray(v) ? v : [];
-    } catch {
-      return [];
-    }
-  })();
-
-  const staticArr = SEED_LISTINGS;
-
+  const local = getLocalListings() || [];
+  const staticOnes = SEED_LISTINGS || [];
   const byId = new Map();
-  for (const raw of [...localArr, ...staticArr]) {
+  for (const raw of [...local, ...staticOnes]) {
     const n = normalizeListing(raw);
     const key = String(n.id);
-    if (!byId.has(key)) byId.set(key, n); // yerel ilan varsa seed'i ezer
+    if (!byId.has(key)) byId.set(key, n);
   }
-
   return Array.from(byId.values());
 }
