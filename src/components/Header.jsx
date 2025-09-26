@@ -30,14 +30,14 @@ export default function Header() {
             Anasayfa
           </Link>
           <Link
-            to="/categories"
-            style={{ textDecoration: "none", color: isActive("/categories") ? "#f97316" : "#111" }}
+            to="/kategori"
+            style={{ textDecoration: "none", color: isActive("/kategori") ? "#f97316" : "#111" }}
           >
             Kategoriler
           </Link>
           <Link
-            to="/new"
-            style={{ textDecoration: "none", color: isActive("/new") ? "#f97316" : "#111" }}
+            to="/yeni"
+            style={{ textDecoration: "none", color: isActive("/yeni") ? "#f97316" : "#111" }}
           >
             İlan Yayınla
           </Link>
