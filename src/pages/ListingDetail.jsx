@@ -1,7 +1,7 @@
+import { SEED_LISTINGS as seedListings } from "../data/listings";
 import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { getLocalListings } from "../services/localListings";
-import { listings as seedListings } from "../data/listings";
 import NotFound from "./NotFound";
 
 export default function ListingDetail() {
