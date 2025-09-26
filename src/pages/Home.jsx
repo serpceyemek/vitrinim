@@ -4,10 +4,25 @@ import { useSearchParams } from "react-router-dom";
 import ListingCard from "../components/ListingCard";
 import { topLevelCategories } from "../data/categories";
 import { useListingPool } from "../data/listings";
+import { useNavigate } from "react-router-dom";
+import { categories } from "../data/categories";
 
 
 export default function Home() {
+   const navigate = useNavigate(); // ← bunu buraya ekle
+   // Home bileşeninin içinde, return'dan önce:
+const handleSearchEnter = (e) => {
+  if (e.key !== "Enter") return;
+  const q = e.currentTarget.value.trim().toLowerCase();
+  if (!q) { navigate("/kategori"); return; }
+  const cat = categories.find((c) =>
+    (c.title || c.name).toLowerCase().includes(q)
+  );
+  navigate(cat ? `/kategori/${cat.path}` : "/kategori");
+};
+
   const pool = useListingPool();
+
 
   // URL'deki ?cat parametresi
   const [sp, setSp] = useSearchParams();
@@ -63,8 +78,19 @@ export default function Home() {
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <input
-          type="search"
-          placeholder="Ara..."
+  type="search"
+  placeholder="Ara..."
+  onKeyDown={(e) => {
+    if (e.key !== "Enter") return;
+    const q = e.currentTarget.value.trim().toLowerCase();
+    if (!q) { navigate("/kategori"); return; }
+    const cat = categories.find((c) =>
+      (c.title || c.name).toLowerCase().includes(q)
+    );
+    navigate(cat ? `/kategori/${cat.path}` : "/kategori");
+  }}
+/>
+
           value={q}
           onChange={(e) => setQ(e.target.value)}
           style={{
@@ -73,7 +99,7 @@ export default function Home() {
             borderRadius: 8,
             border: "1px solid #ddd",
           }}
-        />
+        /
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
