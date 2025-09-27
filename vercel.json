@@ -1,6 +1,16 @@
 {
-  "rewrites": [
-    { "source": "/(.*\\.(?:js|css|png|jpg|jpeg|svg|webp|ico|json|txt|map))", "destination": "/$1" },
-    { "source": "/((?!.*\\.[^/]+$).*)", "destination": "/" }
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)\\.(png|jpg|jpeg|gif|svg|webp|ico|css|js)$",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
+  "redirects": [
+    { "source": "/giris", "destination": "/login", "permanent": true },
+    { "source": "/giriş", "destination": "/login", "permanent": true }
   ]
 }
