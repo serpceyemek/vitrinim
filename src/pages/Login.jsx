@@ -19,21 +19,26 @@ export default function Login() {
     } catch (err) {
       alert(err.message || "Giriş başarısız.");
     } finally {
-      setLoading(false);
-    }
+  // güvenlik: formu temizle
+  setEmail("");
+  setPass("");
+  setLoading(false);
+}
   };
 
   return (
     <main style={{ maxWidth: 420, margin: "40px auto", padding: "24px" }}>
       <h1 style={{ marginBottom: 16 }}>Giriş Yap</h1>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
+      <form onSubmit={onSubmit} autoComplete="off" style={{ display: "grid", gap: 12 }}>
         <label style={{ display: "grid", gap: 6 }}>
           <span>E-posta</span>
           <input
             type="email"
+            name="email"
             placeholder="ornek@posta.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
             style={{ padding: "10px 12px" }}
           />
         </label>
@@ -41,9 +46,11 @@ export default function Login() {
           <span>Şifre</span>
           <input
             type="password"
+            name="new-password"
             placeholder="••••••••"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
+            autoComplete="new-password"
             style={{ padding: "10px 12px" }}
           />
         </label>

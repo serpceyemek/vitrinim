@@ -8,8 +8,7 @@ import Home from "./pages/Home";
 import Category from "./pages/Category";
 import ListingDetail from "./pages/ListingDetail";
 import NewListing from "./pages/NewListing";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
+import Login from "./pages/Login"; // <- DİKKAT: Büyük L
 
 export default function App() {
   return (
@@ -24,15 +23,15 @@ export default function App() {
         <Route path="/ilan/:id" element={<ListingDetail />} />
         <Route path="/yeni" element={<NewListing />} />
 
-        {/* Ana giriş sayfası */}
+        {/* Giriş */}
         <Route path="/login" element={<Login />} />
-
-        {/* Alias yönlendirmeler */}
         <Route path="/giris" element={<Navigate to="/login" replace />} />
         <Route path="/giriş" element={<Navigate to="/login" replace />} />
-<Route path="/__ping" element={<h1 style={{padding:24}}>pong</h1>} />
 
-        <Route path="*" element={<NotFound />} />
+        {/* Ping testi */}
+        <Route path="/__ping" element={<h1 style={{ padding: 24 }}>pong</h1>} />
+
+        <Route path="*" element={<h1 style={{ padding: 24 }}>Sayfa Bulunamadı</h1>} />
       </Routes>
       <Footer />
     </>
