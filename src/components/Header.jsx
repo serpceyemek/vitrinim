@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const { pathname } = useLocation();
-  const isActive = (p) => pathname === p;
+  const isActive = (p) => pathname === p || pathname.startsWith(p + "/");
   const linkStyle = (p) => ({
     textDecoration: "none",
     color: isActive(p) ? "#f97316" : "#000",
@@ -50,6 +50,8 @@ export default function Header() {
             Kategoriler
           </Link>
           <Link to="/yeni" style={linkStyle("/yeni")}>
+          <Link to="/giris" style={linkStyle("/giris")}>Giriş</Link>
+          <Link to="/login" style={linkStyle("/login")}>Giriş</Link>
             İlan Yayınla
           </Link>
         </nav>
