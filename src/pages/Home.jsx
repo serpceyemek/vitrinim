@@ -77,7 +77,7 @@ const handleSearchEnter = (e) => {
       <h1 style={{ marginBottom: 12 }}>Öne Çıkan İlanlar</h1>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <input
+       <input
   type="search"
   placeholder="Ara..."
   onKeyDown={(e) => {

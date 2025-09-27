@@ -1,46 +1,22 @@
-// src/components/Header.jsx
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const { pathname } = useLocation();
   const isActive = (p) => pathname === p;
 
-  return (
-    <header style={{ borderBottom: "1px solid #eee", background: "#fff" }}>
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          padding: "12px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-        }}
-      >
-        <Link
-          to="/"
-          style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}
-        >
-          <img src="/logo.png" alt="Vitrinim" width="28" height="28" />
-          <strong style={{ color: "#f97316" }}>Vitrinim</strong>
-        </Link>
+  const linkStyle = (p) => ({
+    textDecoration: "none",
+    color: isActive(p) ? "#f97316" : "#000",
+  });
 
+  return (
+    <header>
+      <div>
         <nav style={{ marginLeft: "auto", display: "flex", gap: 16 }}>
-          <Link to="/" style={{ textDecoration: "none", color: isActive("/") ? "#f97316" : "#111" }}>
-            Anasayfa
-          </Link>
-          <Link
-            to="/kategori"
-            style={{ textDecoration: "none", color: isActive("/kategori") ? "#f97316" : "#111" }}
-          >
-            Kategoriler
-          </Link>
-          <Link
-            to="/yeni"
-            style={{ textDecoration: "none", color: isActive("/yeni") ? "#f97316" : "#111" }}
-          >
-            İlan Yayınla
-          </Link>
+          <Link to="/" style={linkStyle("/")}>Anasayfa</Link>
+          <Link to="/kategori" style={linkStyle("/kategori")}>Kategoriler</Link>
+          <Link to="/yeni" style={linkStyle("/yeni")}>İlan Yayınla</Link>
         </nav>
       </div>
     </header>
