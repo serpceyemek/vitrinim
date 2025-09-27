@@ -29,7 +29,7 @@ export default function Home() {
           onKeyDown={handleSearchEnter}
           style={{ flex: 1, padding: "10px 12px" }}
         />
-        <Link to="/kategori">Kategoriler</Link>
+        
       </div>
     </main>
   );
