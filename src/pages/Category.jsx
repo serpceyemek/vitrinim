@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { SEED_LISTINGS as seedListings } from "../data/listings";
 import { categories } from "../data/categories";
 import { getLocalListings } from "../services/localListings";
-import NotFound from "./NotFound";
 
 export default function Category() {
   const { path } = useParams();
