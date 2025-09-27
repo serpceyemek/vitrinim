@@ -1,34 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
-  <head><!-- PWA / Standalone -->
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="theme-color" content="#ffffff" />
-
-<!-- iOS için gerekli -->
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-
-<!-- Uygulama adı (opsiyonel) -->
-<meta name="application-name" content="Vitrinim" />
-<meta name="apple-mobile-web-app-title" content="Vitrinim" />
-
-<!-- Manifest (varsa) -->
-
-
+  <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vitrinim</title>
 
-    <!-- Favicon / iOS ikon -->
-    <link rel="icon" href="/logo.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <!-- Manifest + ikonlar -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
 
-    <!-- iPhone/Safari üst bar rengi -->
+    <!-- Üst çubuk renkleri -->
     <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -37,11 +20,11 @@
     <!-- Basit SEO -->
     <meta
       name="description"
-      content="Vitrinim — Emlak, araç, 2. el ve daha fazlasını kolayca ara ve listele."
-      <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+      content="Vitrinim – Emlak, araç, 2. el ve daha fazlasını kolayca ara ve listele."
     />
   </head>
   <body>
+    <noscript>Bu uygulamayı çalıştırmak için JavaScript etkin olmalıdır.</noscript>
     <div id="root"></div>
   </body>
 </html>
