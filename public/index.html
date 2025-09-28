@@ -1,46 +1,31 @@
 <!DOCTYPE html>
 <html lang="tr">
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta property="og:title" content="Vitrinim" />
-<meta property="og:description" content="Emlak, araç, 2. el ve daha fazlası." />
-<meta property="og:image" content="%PUBLIC_URL%/logo512.png" />
-<meta property="og:type" content="website" />
-<meta name="twitter:card" content="summary_large_image" />
-    <title>Vitrinim</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Vitrinim</title>
 
-    <!-- Manifest + ikonlar -->
-     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="any">
-     <link rel="icon" type="image/png" href="/logo192.png" />
+  <!-- PWA / Manifest & Iconlar -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
 
-    <!-- PWA / Standalone -->
-     <!-- PWA / Icons -->
-<link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png">
-<link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+  <!-- Uygulama adı (opsiyonel ama güzel) -->
+  <meta name="application-name" content="Vitrinim" />
+  <meta name="apple-mobile-web-app-title" content="Vitrinim" />
 
+  <!-- iOS / üst bar ve standalone -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
+  <!-- Tema renkleri (açık / koyu) -->
+  <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
 
-
-
-    <!-- Üst çubuk renkleri -->
-    <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<!-- PWA capability (iOS + Chrome/Android) -->
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-    <!-- Basit SEO -->
-    <meta
-      name="description"
-      content="Vitrinim – Emlak, araç, 2. el ve daha fazlasını kolayca ara ve listele."
-    />
-  </head>
+  <!-- Basit SEO -->
+  <meta name="description"
+        content="Vitrinim — Emlak, araç, 2. el ve daha fazlasını kolayca ara ve listele." />
+</head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript etkin olmalıdır.</noscript>
     <div id="root"></div>
