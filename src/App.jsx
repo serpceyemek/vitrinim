@@ -22,7 +22,6 @@ export default function App() {
 
         <Route path="/ilan/:id" element={<ListingDetail />} />
         <Route path="/yeni" element={<NewListing />} />
-
         {/* Giriş */}
         <Route path="/login" element={<Login />} />
         <Route path="/giris" element={<Navigate to="/login" replace />} />

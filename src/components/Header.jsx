@@ -9,7 +9,7 @@ const linkStyle = ({ isActive }) => ({
 export default function Header() {
   return (
     <header style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px" }}>
-      <img src="/logo192.png" alt="Vitrinim" width={24} height={24} />
+      <img src="/logo-192.png" alt="Vitrinim" width={24} height={24} />
       <strong>Vitrinim</strong>
 
       <nav style={{ marginLeft: "auto", display: "flex", gap: 16 }}>
