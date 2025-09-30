@@ -1,31 +1,56 @@
-// Basit cache-first SW (demo)
-const CACHE = "v1";
-const ASSETS = [ "/", "/index.html", "/logo-192.png", "/logo-512.png" ];
+// public/sw.js
+const CACHE_NAME = 'vitrinim-v3'; // <- bunu her önemli değişimde arttır
+const PRECACHE = [
+  '/',            // shell
+  '/index.html',
+  '/manifest.json',
+  '/favicon.ico',
+  // ikonlar
+  '/logo-192.png',
+  '/logo-512.png',
+  '/logo-192-maskable.png',
+  '/logo-512-maskable.png',
+];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
+// Kurulum: gerekli dosyaları önbelleğe at
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE))
+  );
+  self.skipWaiting();
 });
 
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+// Aktivasyon: eski cache'leri sil
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
     )
   );
+  self.clients.claim();
 });
 
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  // Sadece GET istekleri için
-  if (req.method !== "GET") return;
-  e.respondWith(
-    caches.match(req).then(cached =>
-      cached ||
-      fetch(req).then(res => {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(req, copy));
-        return res;
-      }).catch(() => caches.match("/")) // offline fallback
-    )
+// İstekler: cache-first, sonra network; başarısız olursa cache'ten dön
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  event.respondWith(
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(req)
+        .then((resp) => {
+          const copy = resp.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            // uzantı istekleri vs. hariç tut
+            if (!req.url.startsWith('chrome-extension://')) {
+              cache.put(req, copy);
+            }
+          });
+          return resp;
+        })
+        .catch(() => caches.match('/index.html')); // offline fallback
+    })
   );
 });
