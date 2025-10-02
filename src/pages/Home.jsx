@@ -1,36 +1,51 @@
+// src/pages/Home.jsx
 import React, { useState } from "react";
-import { useNavigate, } from "react-router-dom";
-import { categories } from "../data/categories";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const [q, setQ] = useState("");
   const navigate = useNavigate();
+  const [q, setQ] = useState("");
 
   const handleSearchEnter = (e) => {
     if (e.key !== "Enter") return;
-    const qv = e.currentTarget.value.trim().toLowerCase();
-    if (!qv) { navigate("/kategori"); return; }
-    const cat = categories.find((c) =>
-      (c.title || c.name).toLowerCase().includes(qv)
-    );
-    navigate(cat ? `/kategori/${cat.path}` : "/kategori");
+    const value = e.currentTarget.value.trim().toLowerCase();
+    if (!value) {
+      navigate("/kategori");
+      return;
+    }
+    // Basit yönlendirme: kategori sayfasına git
+    // (İsterseniz sonra value'yu path eşlemesiyle /kategori/:path yaparız)
+    navigate(`/kategori/${encodeURIComponent(value)}`);
   };
 
   return (
     <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
-      <h1 style={{ marginBottom: 12 }}>Öne Çıkan İlanlar</h1>
-
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <input
-          type="search"
-          placeholder="Ara..."
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={handleSearchEnter}
-          style={{ flex: 1, padding: "10px 12px" }}
-        />
-        
+        {/* Erişilebilir etiket (görsel olarak gizli) */}
+        <label htmlFor="search" style={{ display: "block", fontSize: 12, marginBottom: 6 }}>
+  Ara
+ <label htmlFor="search" style={{position:'absolute',width:1,height:1,margin:-1,overflow:'hidden',clip:'rect(0,0,0,0)',whiteSpace:'nowrap',border:0}}>
+  Ara
+</label>
+ 
+</label>
+<input
+  id="search"            // ← eklendi
+  name="search"          // ← eklendi
+  aria-label="Ara"       // ← ekran okuyucu için
+  type="search"
+  placeholder="Ara..."
+  autoComplete="on"
+  enterKeyHint="search"
+  value={q}
+  onChange={(e) => setQ(e.target.value)}
+  onKeyDown={handleSearchEnter}
+  style={{ flex: 1, padding: "10px 12px" }}
+/>
       </div>
+
+      {/* Buradan sonrası: senin mevcut içeriklerin / kart grid'in vs. */}
+      {/* <ListingGrid .../> ya da başka bileşenlerin burada kalabilir */}
     </main>
   );
 }
