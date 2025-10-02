@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")).render(
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/sw.js')
+  .register('/sw.js?v=10', { scope: '/' })
       .then((reg) => console.log('SW registered', reg))
       .catch(console.error);
   });

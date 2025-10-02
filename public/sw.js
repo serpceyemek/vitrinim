@@ -1,6 +1,6 @@
 // public/sw.js
 
-const VERSION = 'v7';                   // <-- sürümü artır
+const VERSION = 'v10';                   // <-- sürümü artır
 const STATIC_CACHE = `static-${VERSION}`;
 
 const APP_SHELL = [
