@@ -1,56 +1,65 @@
 // public/sw.js
-const CACHE_NAME = 'vitrinim-v3'; // <- bunu her önemli değişimde arttır
-const PRECACHE = [
-  '/',            // shell
+const VERSION = 'v4';
+const STATIC_CACHE = `static-${VERSION}`;
+
+const APP_SHELL = [
+  '/',
   '/index.html',
   '/manifest.json',
-  '/favicon.ico',
-  // ikonlar
   '/logo-192.png',
   '/logo-512.png',
   '/logo-192-maskable.png',
-  '/logo-512-maskable.png',
+  '/logo-512-maskable.png'
 ];
 
-// Kurulum: gerekli dosyaları önbelleğe at
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE))
+    caches.open(STATIC_CACHE).then((cache) => cache.addAll(APP_SHELL))
   );
   self.skipWaiting();
 });
 
-// Aktivasyon: eski cache'leri sil
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
+      Promise.all(keys.map((k) => (k !== STATIC_CACHE ? caches.delete(k) : null)))
     )
   );
   self.clients.claim();
 });
 
-// İstekler: cache-first, sonra network; başarısız olursa cache'ten dön
+function isNavigationRequest(req) {
+  return (
+    req.mode === 'navigate' ||
+    (req.method === 'GET' && req.headers.get('accept')?.includes('text/html'))
+  );
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
 
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
+  // 1) NAVİGASYON: /yeni gibi sayfa isteklerinde index.html'i döndür (SPA fallback)
+  if (url.origin === location.origin && isNavigationRequest(req)) {
+    event.respondWith(
+      caches.match('/index.html').then((cached) => cached || fetch('/index.html'))
+    );
+    return;
+  }
 
-      return fetch(req)
-        .then((resp) => {
-          const copy = resp.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            // uzantı istekleri vs. hariç tut
-            if (!req.url.startsWith('chrome-extension://')) {
-              cache.put(req, copy);
-            }
-          });
-          return resp;
-        })
-        .catch(() => caches.match('/index.html')); // offline fallback
-    })
-  );
+  // 2) AYNI KÖKEN STATİK DOSYALAR: cache-first + ağdan gelirse cache’e koy
+  if (url.origin === location.origin) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req)
+          .then((res) => {
+            const clone = res.clone();
+            caches.open(STATIC_CACHE).then((c) => c.put(req, clone));
+            return res;
+          })
+          .catch(() => caches.match('/index.html'));
+      })
+    );
+  }
 });
