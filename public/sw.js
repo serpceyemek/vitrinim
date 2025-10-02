@@ -1,5 +1,5 @@
 // public/sw.js
-const VERSION = 'v4';
+const VERSION = 'v5';
 const STATIC_CACHE = `static-${VERSION}`;
 
 const APP_SHELL = [
