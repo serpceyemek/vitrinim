@@ -1,8 +1,10 @@
 // public/sw.js
 
-const VERSION = 'v10';                   // <-- sürümü artır
+// Sürümü artır (cache'i zorla yenilesin)
+const VERSION = 'v11';
 const STATIC_CACHE = `static-${VERSION}`;
 
+// İlk kurulumda mutlaka cache'lenecek dosyalar (senin mevcut listen)
 const APP_SHELL = [
   '/index.html',
   '/manifest.json',
@@ -13,40 +15,70 @@ const APP_SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(APP_SHELL))
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(STATIC_CACHE);
+    // 1) Kabuk dosyaları
+    await cache.addAll(APP_SHELL);
+
+    // 2) index.html içinden main.*.js ve main.*.css'i yakala ve cache'e ekle
+    try {
+      const resp = await fetch('/index.html', { cache: 'no-cache' });
+      const html = await resp.text();
+      const jsMatch  = html.match(/\/static\/js\/main\.[^"]+\.js/);
+      const cssMatch = html.match(/\/static\/css\/main\.[^"]+\.css/);
+      const extra = [];
+      if (jsMatch)  extra.push(jsMatch[0]);
+      if (cssMatch) extra.push(cssMatch[0]);
+      if (extra.length) {
+        await cache.addAll(extra);
+      }
+    } catch (_) {
+      // Sessiz geç
+    }
+  })());
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((k) =>
-          k.startsWith('static-') && k !== STATIC_CACHE ? caches.delete(k) : undefined
-        )
-      )
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => (k !== STATIC_CACHE ? caches.delete(k) : null)));
+    await self.clients.claim();
+  })());
 });
 
+// Navigation istekleri: online dene, düşerse index.html'e dön
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+  const url = new URL(req.url);
 
-  // SPA yönlendirmeleri için: /, /yeni, /kategori/... gibi tüm navigasyonlar
+  // SPA yönlendirmeleri
   if (req.mode === 'navigate') {
-    event.respondWith(
-      caches.match('/index.html').then((cached) => cached || fetch(req))
-    );
+    event.respondWith((async () => {
+      try {
+        return await fetch(req);
+      } catch (_) {
+        const cache = await caches.open(STATIC_CACHE);
+        return (await cache.match('/index.html')) || Response.error();
+      }
+    })());
     return;
   }
 
-  // Aynı origin'e GET istekleri: logo, manifest vs.
-  if (req.method === 'GET' && new URL(req.url).origin === self.location.origin) {
-    event.respondWith(
-      caches.match(req).then((cached) => cached || fetch(req))
-    );
+  // /static/* için cache-first
+  if (url.origin === self.location.origin && url.pathname.startsWith('/static/')) {
+    event.respondWith((async () => {
+      const cache = await caches.open(STATIC_CACHE);
+      const hit = await cache.match(req);
+      if (hit) return hit;
+      try {
+        const resp = await fetch(req);
+        cache.put(req, resp.clone());
+        return resp;
+      } catch (_) {
+        return Response.error();
+      }
+    })());
+    return;
   }
 });
