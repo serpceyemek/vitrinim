@@ -6,11 +6,16 @@ const linkStyle = ({ isActive }) => ({
   color: isActive ? "#f97316" : "inherit",
 });
 
+// src/Header.jsx
+
 export default function Header() {
   return (
     <header style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px" }}>
       <img src="/logo-192.png" alt="Vitrinim" width={24} height={24} />
       <strong>Vitrinim</strong>
+    </header>
+  );
+}
 
       <nav style={{ marginLeft: "auto", display: "flex", gap: 16 }}>
         <NavLink to="/" style={linkStyle}>Anasayfa</NavLink>
