@@ -9,7 +9,7 @@ if ('serviceWorker' in navigator) {
 
       // Eğer sayfa açıldığında zaten bekleyen yeni bir SW varsa, hemen sor
       if (reg.waiting && navigator.serviceWorker.controller) {
-        if (confirm('Yeni sürüm hazır. Uygulamayı şimdi güncelleyelim mi?')) {
+        if (window.confirm('Yeni sürüm hazır. Uygulamayı şimdi güncelleyelim mi?')) {
           reg.waiting.postMessage({ type: 'SKIP_WAITING' });
         }
       }
@@ -21,7 +21,7 @@ if ('serviceWorker' in navigator) {
         nw.addEventListener('statechange', () => {
           // "installed" + controller varsa: bu bir GÜNCELLEME (ilk kurulum değil)
           if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-            if (confirm('Yeni sürüm hazır. Uygulamayı şimdi güncelleyelim mi?')) {
+            if (window.confirm('Yeni sürüm hazır. Uygulamayı şimdi güncelleyelim mi?')) {
               reg.waiting?.postMessage({ type: 'SKIP_WAITING' });
             }
           }
