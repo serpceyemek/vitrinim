@@ -1,10 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.jsx'; // Dosyanız App.js ise .jsx yerine .js yazın
+import { BrowserRouter } from 'react-router-dom';
+import App from './App.jsx'; // App.js ise .js yap
 
-const container = document.getElementById('root');
-const root = createRoot(container);
-root.render(<App />);
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
 
 // Minimal service worker kaydı
 if ('serviceWorker' in navigator) {
