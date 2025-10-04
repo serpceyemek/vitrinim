@@ -62,3 +62,10 @@ self.addEventListener('fetch', (event) => {
     })()
   );
 });
+// İstemciden gelen "hemen güncelle" mesajını yakala
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
