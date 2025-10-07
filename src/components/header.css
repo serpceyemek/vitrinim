@@ -127,3 +127,24 @@
 .drawer-link.active {
   background: rgba(249, 115, 22, .12);
 }
+/* ---- global tema ---- */
+:root {
+  --bg: #ffffff;
+  --fg: #1f2937;   /* koyu gri metin */
+  --muted: #f3f4f6;/* açık gri yüzey */
+  --brand: #ff7a00;/* turuncu */
+}
+
+html, body {
+  background: var(--bg) !important;
+  color: var(--fg) !important;
+}
+
+/* (opsiyonel) sistem koyu moduna saygı duysun istiyorsan: */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0f14;
+    --fg: #e5e7eb;
+    --muted: #1f2937;
+  }
+}
