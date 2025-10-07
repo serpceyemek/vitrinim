@@ -3,9 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Splash from "./components/Splash";
 import BottomTabs from "./components/BottomTabs"; // ← sadece bu import olsun
-
 import Home from "./pages/Home";
-import Categories from "./pages/Categories";
+import Categories from "./pages/categories";
 import NewListing from "./pages/NewListing";
 import Login from "./pages/Login";
 
