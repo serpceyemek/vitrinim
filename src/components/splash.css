@@ -1,0 +1,38 @@
+/* src/components/splash.css */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+
+@media (prefers-color-scheme: dark) {
+  .splash { background: #0b0f19; }
+}
+
+.splash-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.15);
+  background: #fff;
+  animation: splash-pop .25s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .splash-card { background: #101828; }
+}
+
+.splash-title {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+@keyframes splash-pop {
+  from { transform: scale(.98); opacity: .8; }
+  to   { transform: scale(1);   opacity: 1; }
+}

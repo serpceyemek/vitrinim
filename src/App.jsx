@@ -1,38 +1,39 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-
+// src/App.jsx (örnek)
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Splash from "./components/Splash";
+import BottomTabs from "./components/BottomTabs"; // 3. adım gelince aktif olacak
 
-import Home from "./pages/Home";
-import Category from "./pages/Category";
-import ListingDetail from "./pages/ListingDetail";
+import Home from "./pages/Home";          // senin sayfaların
+import Categories from "./pages/Categories";
 import NewListing from "./pages/NewListing";
-import Login from "./pages/Login"; // <- DİKKAT: Büyük L
+import Login from "./pages/Login";
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(
+    !sessionStorage.getItem("splashShown")
+  );
+
   return (
     <>
+      {showSplash && <Splash onDone={() => setShowSplash(false)} />}
+
       <Header />
+
       <Routes>
         <Route path="/" element={<Home />} />
-
-        <Route path="/kategori" element={<Category />} />
-        <Route path="/kategori/:path" element={<Category />} />
-
-        <Route path="/ilan/:id" element={<ListingDetail />} />
+        <Route path="/kategori" element={<Categories />} />
         <Route path="/yeni" element={<NewListing />} />
-        {/* Giriş */}
         <Route path="/login" element={<Login />} />
-        <Route path="/giris" element={<Navigate to="/login" replace />} />
-        <Route path="/giriş" element={<Navigate to="/login" replace />} />
-
-        {/* Ping testi */}
-        <Route path="/__ping" element={<h1 style={{ padding: 24 }}>pong</h1>} />
-
-        <Route path="*" element={<h1 style={{ padding: 24 }}>Sayfa Bulunamadı</h1>} />
       </Routes>
-      <Footer />
+
+      {/* 3. adımda eklenecek:
+      <BottomTabs />
+      */}
     </>
   );
 }
+import BottomTabs from "./components/BottomTabs";
+// ...
+<BottomTabs />

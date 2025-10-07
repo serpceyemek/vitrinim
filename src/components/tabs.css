@@ -1,0 +1,49 @@
+/* src/components/tabs.css */
+.tabs {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 40;
+  display: none;              /* desktop'ta gizli */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  padding: 8px max(8px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-right));
+  background: #fff;
+  border-top: 1px solid rgba(17,24,39,0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  .tabs {
+    background: #0b0f19;
+    border-top-color: rgba(255,255,255,0.08);
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs { display: grid; }
+  body { padding-bottom: 64px; } /* içerik altta gizlenmesin */
+}
+
+.tab {
+  text-decoration: none;
+  color: inherit;
+  border-radius: 14px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+}
+
+.tab span {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tab.active {
+  background: rgba(249, 115, 22, .12);
+}
+
+.tab.add {
+  font-weight: 700;
+  outline: 2px solid rgba(249,115,22,.25);
+  outline-offset: 2px;
+}
