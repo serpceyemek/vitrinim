@@ -1,21 +1,22 @@
-// src/components/Splash.jsx
 import { useEffect } from "react";
 import "./splash.css";
 
-export default function Splash({ onDone = () => {} }) {
+export default function Splash({ onDone }) {
   useEffect(() => {
-    const t = setTimeout(() => {
-      sessionStorage.setItem("splashShown", "1");
-      onDone();
-    }, 700); // 0.7sn
+    const t = setTimeout(() => onDone && onDone(), 800);
     return () => clearTimeout(t);
   }, [onDone]);
 
   return (
     <div className="splash">
-      <div className="splash-card">
-        <img src="/logo-192.png" alt="Vitrinim" width={48} height={48} />
-        <div className="splash-title">Vitrinim</div>
+      <div className="pop">
+        {/* Basit beyaz dükkân ikonu (inline SVG) */}
+        <svg viewBox="0 0 24 24" width="112" height="112" stroke="white" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 10h18" />
+          <path d="M5 10V6l2-2h10l2 2v4" />
+          <path d="M7 10v8h10v-8" />
+          <rect x="9" y="13" width="5" height="3" rx="0.6" />
+        </svg>
       </div>
     </div>
   );

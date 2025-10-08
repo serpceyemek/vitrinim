@@ -33,9 +33,9 @@ export default function Home() {
   id="search"            // ← eklendi
   name="search"          // ← eklendi
   aria-label="Ara"       // ← ekran okuyucu için
-  type="search"
+   type="text"
   placeholder="Ara..."
-  autoComplete="on"
+  autoComplete="off"
   enterKeyHint="search"
   value={q}
   onChange={(e) => setQ(e.target.value)}
