@@ -29,3 +29,22 @@ export default function App() {
     </>
   );
 }
+import BottomTabs from "./components/BottomTabs";
+import "./components/tabs.css";
+import "./components/header.css";
+
+export default function App(){
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/"          element={<Home />} />
+        <Route path="/kategori"  element={<Categories />} />
+        <Route path="/yeni"      element={<NewListing />} />
+        <Route path="/login"     element={<Login />} />
+      </Routes>
+
+      <BottomTabs />
+    </>
+  );
+}

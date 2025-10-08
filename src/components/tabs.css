@@ -36,3 +36,31 @@
   outline: 2px solid rgba(249,115,22,.25);
   outline-offset: 2px;
 }
+:root{ --bottom-h: 64px; }
+
+.bottom-tabs{
+  position: fixed; left:0; right:0; bottom:0;
+  display:flex; gap:8px;
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+  background: var(--card);
+  border-top: 1px solid var(--muted);
+  z-index: 999;
+}
+
+.tab{
+  flex:1; height:56px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:4px;
+  text-decoration:none; color: var(--text);
+  border-radius: 12px;
+}
+
+.tab.active{ background: rgba(255,255,255,.06); }
+.tab.primary{ background:#2563eb; color:#fff; }
+
+.tab .ico{ line-height:1; font-size:18px; }
+.tab .label{ font-size:12px; }
+
+/* İçerik sekmelerin altında kalmasın */
+body{ padding-bottom: var(--bottom-h); }
