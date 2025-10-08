@@ -1,0 +1,45 @@
+/* Sayfa arkaplanı */
+body { background: #f8fafc; }
+
+/* İçerik alanı: altta sabit tabbarın üzerine binmesin */
+.home {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 16px 100px; /* altta boşluk */
+}
+
+/* Arama alanı */
+.hero { display: flex; flex-direction: column; gap: 12px; margin: 8px 0 16px; }
+.search {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 0 14px;
+  font-size: 16px;
+  background: #fff;
+}
+
+/* Kategori ızgarası */
+.cats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 768px) {
+  .cats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 64px;
+  padding: 0 14px;
+  background: #fff;
+  color: #111827;
+  text-decoration: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.cat:hover { box-shadow: 0 3px 10px rgba(0,0,0,.10); }
