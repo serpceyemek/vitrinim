@@ -1,24 +1,40 @@
-:root { --tabbar-h: 84px; }     /* alt bar yüksekliği */
-html, body, #root { height: 100%; }
-body { padding-bottom: var(--tabbar-h); } /* içerik barın altına girmesin */
+/* === Bottom Tabs (sabit alt bar) === */
 
+/* Taban değişken: bar yüksekliği (ikonlu "İlan Ver" dahil) */
+:root { 
+  --bottom-tabs-h: 84px;
+}
+
+/* İçerik sayfası: bar altında kaybolmayı önle */
+.app-page {
+  /* İçerik yüksek dikiş: mobil tarayıcı şeritleri için dayanıklı */
+  min-height: 100vh;
+  /* Alt bar + iOS/çentik güvenli alan boşluğu */
+  padding-bottom: calc(var(--bottom-tabs-h) + env(safe-area-inset-bottom));
+}
+
+/* Alt bar kapsayıcı */
 .bottom-tabs {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: var(--tabbar-h);
-  z-index: 1000;
-  background: #111827;         /* füme */
-  color: #fff;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-.bottom-tabs .tab .ico{ font-size:1.25rem; line-height:1; }
-.bottom-tabs .tab .lbl{ font-size:.85rem; }
 
-.bottom-tabs .tab.primary{
-  background:#2563eb; color:#fff;
-  transform:translateY(-.35rem);
+  height: var(--bottom-tabs-h);
+  z-index: 50;                      /* header üstünde kalsın */
+  background: #0f172a;              /* senin füme/dark */
+  border-top: 1px solid rgba(255,255,255,.08);
+
+  /* iOS çentik ve gesture alanı için içten boşluk */
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-backdrop-filter: saturate(120%) blur(6px);
+  backdrop-filter: saturate(120%) blur(6px);
 }
-.bottom-tabs .tab.primary .ico.plus{ font-size:1.35rem; }
-.bottom-tabs .tab.active{ color:#fff; }
+
+/* (Opsiyonel) Alt bar içindeki ikon/simge hizası için örnek */
+.bottom-tabs .tabs-inner {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* ikon sayına göre ayarla */
+  align-items: center;
+}

@@ -10,6 +10,8 @@ import NewListing from "./pages/NewListing";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import BanaOzel from "./pages/BanaOzel";
+import './components/tabs.css';
+
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -20,14 +22,12 @@ export default function App() {
 
       <Header />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/kategori" element={<Categories />} />
-        <Route path="/yeni" element={<NewListing />} />
-        <Route path="/bana-ozel" element={<BanaOzel />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <div className="app-page">
+  <Routes>
+    {/* rotalar */}
+  </Routes>
+</div>
+
 
       <BottomTabs />
     </>
