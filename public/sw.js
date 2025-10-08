@@ -1,5 +1,5 @@
 /* public/sw.js */
-const CACHE = "vitrinim-cache-v4";
+const CACHE = "vitrinim-cache-v5";
 const APP_STATIC = [
   "/offline.html",
   "/manifest.json",
@@ -10,7 +10,7 @@ const APP_STATIC = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(APP_STATIC)));
+  event.waitUntil(caches.open(CACHE).then(c => c.addAll(APP_STATIC)));
   self.skipWaiting();
 });
 
@@ -21,41 +21,46 @@ self.addEventListener("activate", (event) => {
     if (self.registration.navigationPreload) {
       await self.registration.navigationPreload.enable();
     }
-    await self.clients.claim();
+    await self.clients.claim(); // açık sekmeleri de sahiplen
   })());
 });
+
+/* HTML GEZİNTİ ALGILAMA:
+   - mode === 'navigate' (modern)
+   - veya Accept: text/html (bazı durumlar) */
+function isNavigation(req) {
+  return req.mode === "navigate" ||
+         (req.method === "GET" && req.headers.get("accept")?.includes("text/html"));
+}
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Sayfa gezintileri: çevrimdışı ise offline.html'e düş
-  if (req.mode === "navigate") {
+  if (isNavigation(req)) {
     event.respondWith((async () => {
       try {
         const preload = await event.preloadResponse;
         if (preload) return preload;
-        const network = await fetch(req);
-        return network;
-      } catch (err) {
+        const net = await fetch(req);
+        return net;
+      } catch {
         const cache = await caches.open(CACHE);
-        const fallback = await cache.match("/offline.html");
-        return fallback;
+        return (await cache.match("/offline.html")) ||
+               new Response("Offline", { status: 503 });
       }
     })());
     return;
   }
 
-  // Diğer istekler: cache-first, yoksa ağdan al ve önbelleğe koy
+  // Diğer istekler: cache-first
   event.respondWith((async () => {
     const cached = await caches.match(req);
     if (cached) return cached;
-
     try {
       const res = await fetch(req);
       caches.open(CACHE).then(c => c.put(req, res.clone()));
       return res;
-    } catch (err) {
-      // Dosya için özel yedek yoksa sessiz geç
+    } catch {
       return new Response("", { status: 504, statusText: "Offline" });
     }
   })());
