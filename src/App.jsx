@@ -2,7 +2,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Kategoriler from "./pages/categories";
 import NewListing from "./pages/NewListing";
 import Login from "./pages/Login";
@@ -16,7 +16,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/kategoriler" element={<Kategoriler />} />
+        <Route path="/Kategoriler" element={<Kategoriler />} />
         <Route path="/ilan-ver" element={<NewListing />} />
         <Route path="/giris" element={<Login />} />
         <Route path="/bana-ozel" element={<BanaOzel />} />
