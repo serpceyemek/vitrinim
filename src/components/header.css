@@ -1,17 +1,25 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #eee;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.logo {
+  height: 42px;
+  width: auto;
+}
 .app-header{
-  position:sticky; top:0; z-index:50;
-  display:flex; align-items:center; gap:.75rem;
-  padding:.6rem .9rem;
-  background:#0b1220; color:#fff;
-  border-bottom:1px solid rgba(255,255,255,.06);
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  height:60px; background:#fff; border-bottom:1px solid #eee;
+  display:flex; align-items:center; justify-content:center;
+  padding-top: env(safe-area-inset-top);
 }
-.app-header .brand img{ border-radius:.5rem; display:block; }
-.app-header .top-nav{ display:flex; gap:1rem; margin-left:.25rem; }
-.app-header .top-nav a{
-  color:#e5e7eb; text-decoration:none; font-size:.95rem;
-}
-.app-header .top-nav a.active{ color:#fff; }
-.app-header .top-nav .publish{
-  padding:.25rem .6rem; border-radius:.5rem;
-  background:#2563eb; color:#fff;
-}
+.logo{ height:40px; object-fit:contain; }

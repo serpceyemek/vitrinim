@@ -1,40 +1,87 @@
-/* === Bottom Tabs (sabit alt bar) === */
-
-/* Taban değişken: bar yüksekliği (ikonlu "İlan Ver" dahil) */
-:root { 
-  --bottom-tabs-h: 84px;
-}
-
-/* İçerik sayfası: bar altında kaybolmayı önle */
-.app-page {
-  /* İçerik yüksek dikiş: mobil tarayıcı şeritleri için dayanıklı */
-  min-height: 100vh;
-  /* Alt bar + iOS/çentik güvenli alan boşluğu */
-  padding-bottom: calc(var(--bottom-tabs-h) + env(safe-area-inset-bottom));
-}
-
-/* Alt bar kapsayıcı */
 .bottom-tabs {
+  .bottom-tabs {
+  position: fixed; left:0; right:0; bottom:0; z-index:100;
+  height:84px; background:#f97316; display:flex; justify-content:space-around; align-items:center;
+  border-top:1px solid rgba(255,255,255,.2);
+  padding-bottom: env(safe-area-inset-bottom);
+}
   position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-
-  height: var(--bottom-tabs-h);
-  z-index: 50;                      /* header üstünde kalsın */
-  background: #0f172a;              /* senin füme/dark */
-  border-top: 1px solid rgba(255,255,255,.08);
-
-  /* iOS çentik ve gesture alanı için içten boşluk */
-  padding-bottom: env(safe-area-inset-bottom);
-  -webkit-backdrop-filter: saturate(120%) blur(6px);
-  backdrop-filter: saturate(120%) blur(6px);
+  background-color: #ff7a00;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 65px;
+  color: #fff;
+  border-top: 1px solid #e5e5e5;
+  z-index: 999;
 }
 
-/* (Opsiyonel) Alt bar içindeki ikon/simge hizası için örnek */
-.bottom-tabs .tabs-inner {
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* ikon sayına göre ayarla */
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  color: white;
+  font-size: 13px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+/* aktif sekme vurgusu */
+.tab-item.active { opacity: 1; }
+.tab-item.active .tab-icon,
+.tab-item.active span { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); font-weight: 700; }
+
+
+.tab-item:hover{ opacity:1; }
+.tab-icon{ font-size:22px; margin-bottom:3px; }
+.plus{
+  background:#fff; color:#f97316; border-radius:50%; width:64px; height:64px; margin-top:-20px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,.25); font-weight:700;
+}
+.tab-item:hover {
+  opacity: 0.8;
+}
+
+.tab-item{
+  display:flex; flex-direction:column; align-items:center; text-decoration:none; color:#fff; font-size:13px; opacity:.9;
+  transition:.15s;
+}
+
+.tab-icon {
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+
+.plus {
+  background-color: white;
+  color: #f97316;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+}
+/* Sayfa içeriği, header ve alt bar çakışmasın */
+/* içerik güvenli boşluk */
+
+ 
+.app-page {
+   padding-top: calc(70px + env(safe-area-inset-top));
+  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  padding-left:12px; padding-right:12px; box-sizing:border-box;
+  /* üstte header ~60px, altta alt bar ~84px */
+  padding-top: 70px;
+  padding-bottom: 100px;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
 }

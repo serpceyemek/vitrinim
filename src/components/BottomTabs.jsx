@@ -1,53 +1,35 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import "./tabs.css";
+import { NavLink, Link } from "react-router-dom";
+import { FaStore, FaSearch, FaUser, FaStar } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
 
 export default function BottomTabs() {
-  const navigate = useNavigate();
-  const focusSearch = () => {
-  const el =
-    document.getElementById("search") ||
-    document.querySelector('input[placeholder^="Ara"]');
-  if (el) {
-    el.focus();
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-};
-
-
-  const goSearch = (e) => {
-    e.preventDefault();
-    // arama sekmesi: ana sayfaya git ve #search'e kaydır
-    navigate("/#search");
-    const el = document.getElementById("search");
-    if (el) { el.focus(); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
-  };
-
   return (
-    <nav className="bottom-tabs" aria-label="Alt gezinme">
-      <NavLink to="/" className="tab">
-        <span className="ico" aria-hidden>🏬</span>
-        <span className="lbl">Mağaza</span>
+    <nav className="bottom-tabs">
+      <NavLink to="/" end className={({isActive}) => "tab-item" + (isActive ? " active" : "")}>
+        <FaStore className="tab-icon" />
+        <span>Mağaza</span>
       </NavLink>
 
-      <a href="/#search" onClick={goSearch} className="tab">
-        <span className="ico" aria-hidden>🔍</span>
-        <span className="lbl">Arama</span>
-      </a>
-
-      <NavLink to="/yeni" className="tab primary" aria-label="İlan ver">
-        <span className="ico plus" aria-hidden>＋</span>
-        <span className="lbl">İlan ver</span>
+      <NavLink to="/arama" className={({isActive}) => "tab-item" + (isActive ? " active" : "")}>
+        <FaSearch className="tab-icon" />
+        <span>Arama</span>
       </NavLink>
 
-      <NavLink to="/bana-ozel" className="tab">
-        <span className="ico" aria-hidden>⭐</span>
-        <span className="lbl">Bana özel</span>
+      <Link to="/ilan-ver" className="tab-item plus">
+        <IoMdAdd className="tab-icon" />
+        <span>İlan Ver</span>
+      </Link>
+
+      <NavLink to="/bana-ozel" className={({isActive}) => "tab-item" + (isActive ? " active" : "")}>
+        <FaStar className="tab-icon" />
+        <span>Bana Özel</span>
       </NavLink>
 
-      <NavLink to="/login" className="tab">
-        <span className="ico" aria-hidden>👤</span>
-        <span className="lbl">Profilim</span>
+      <NavLink to="/profilim" className={({isActive}) => "tab-item" + (isActive ? " active" : "")}>
+        <FaUser className="tab-icon" />
+        <span>Profilim</span>
       </NavLink>
     </nav>
   );
 }
+// eslint-disable-next-line
