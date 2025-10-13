@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const src = path.join(__dirname, '..', 'public', 'sw.js');
-const dest = path.join(__dirname, '..', 'build', 'sw.js');
+const dest = path.join(__dirname, "../public/sw.js");
+
 
 try {
   fs.copyFileSync(src, dest);
