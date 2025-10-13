@@ -1,31 +1,14 @@
 {
   "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
   ],
   "headers": [
     {
       "source": "/(.*)\\.json",
-      "headers": [
-        { "key": "Content-Type", "value": "application/json; charset=utf-8" }
-      ]
-    },
-    {
-      "source": "/(.*)\\.js",
-      "headers": [
-        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" }
-      ]
+      "headers": [{ "key": "Content-Type", "value": "application/json; charset=utf-8" }]
     }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
