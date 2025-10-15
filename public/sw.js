@@ -1,12 +1,12 @@
 // @ts-nocheck
-// SW v27 (temiz ASCII, noktalı virgüller tam)
+// SW v28 (temiz ASCII, noktalı virgüller tam)
 
-const CACHE = "vitrinim-v27";
+const CACHE = "vitrinim-v28";
 const ASSETS = [
   "/",
   "/index.html",
   "/offline.html",
-  "/manifest-v25.json",
+  "/manifest-v28.json",
   "/logo-192.png",
   "/logo-512.png",
   "/apple-touch-icon.png"
