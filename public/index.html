@@ -1,0 +1,28 @@
+<!-- @ts-nocheck -->
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Vitrinim - ilan paylaş, keşfet, bağlantı kur." />
+
+    <link rel="manifest" href="/manifest-v27.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>Vitrinim</title>
+  </head>
+  <body>
+    <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirin.</noscript>
+    <div id="root"></div>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/sw.js?v=27")
+          .then(() => console.log("SW v27 registered ✅"))
+          .catch((err) => console.error("SW registration failed:", err));
+      }
+    </script>
+  </body>
+</html>

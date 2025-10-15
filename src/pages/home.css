@@ -1,0 +1,66 @@
+
+.home-page {
+  margin-top: 80px; /* Üstten boşluk bırak */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* Ana kapsayıcı */
+.categories-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 10px 16px 80px;
+  background-color: #f9fafb;
+}
+
+/* Her kategori kartı */
+.category-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 18px;
+  text-decoration: none;
+  color: #111;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+/* Hover efekti */
+.category-card:hover {
+  background-color: #fff7ef;
+  border-color: #f97316;
+  transform: translateY(-1px);
+}
+
+/* Simge alanı */
+.category-icon {
+  font-size: 22px;
+  color: #f97316;
+  flex-shrink: 0;
+}
+
+/* Metin alanı */
+.category-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.category-sub {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}

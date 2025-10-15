@@ -1,0 +1,25 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #eee;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.logo {
+  height: 42px;
+  width: auto;
+}
+.app-header{
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  height:60px; background:#fff; border-bottom:1px solid #eee;
+  display:flex; align-items:center; justify-content:center;
+  padding-top: env(safe-area-inset-top);
+}
+.logo{ height:40px; object-fit:contain; }

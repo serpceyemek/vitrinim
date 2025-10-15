@@ -1,0 +1,30 @@
+.listing-page {
+  padding: 80px 20px 100px;
+}
+
+.listing-page h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.listing-page ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.listing-page li {
+  background: #fff;
+  padding: 14px 18px;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+  color: #222;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.listing-page li:hover {
+  background-color: #fff7f0;
+}
