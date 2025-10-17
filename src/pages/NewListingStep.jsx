@@ -28,6 +28,31 @@ export default function NewListingStep() {
   return (
     <section className="p-4 flex flex-col h-[calc(100vh-130px)] overflow-hidden">
       {/* 🔍 Arama Kutusu + Mikrofon */}
+      {/* 🔸 Arama kutusu sadece ana “/ilan-ver” sayfasında görünsün */}
+{!node.slug && (
+  <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-4 shadow-sm">
+    <input
+      type="text"
+      placeholder="Ne satıyorsun/kiralıyorsun? (Ör: Koltuk)"
+      className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
+    />
+    <button
+      onClick={() => alert('Sesli arama özelliği yakında eklenecek!')}
+      className="ml-2 text-orange-500"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className="w-5 h-5"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v9m0 0v9m0-9H3m9 0h9" />
+      </svg>
+    </button>
+  </div>
+)}
       <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-4 shadow-sm">
         <input
           type="text"
