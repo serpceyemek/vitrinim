@@ -1,27 +1,41 @@
 // src/services/localListings.js
-const STORAGE_KEY = "local_listings_v1";
 
 export function getLocalListings() {
-  try {
-    const raw =
-      typeof localStorage !== "undefined"
-        ? localStorage.getItem(STORAGE_KEY)
-        : null;
-    const arr = raw ? JSON.parse(raw) : [];
-    return Array.isArray(arr) ? arr : [];
-  } catch {
-    return [];
-  }
-}
-
-export function writeLocalListings(listings) {
-  try {
-    const arr = Array.isArray(listings) ? listings : [];
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  return [
+    {
+      id: 1,
+      title: "3+1 Modern Daire",
+      price: "2.150.000 ₺",
+      location: "İstanbul / Kadıköy",
+      image: "https://picsum.photos/seed/ev1/800/480"
+    },
+    {
+      id: 2,
+      title: "SUV 2020 Model",
+      price: "950.000 ₺",
+      location: "İzmir / Karşıyaka",
+      image: "https://picsum.photos/seed/araba/800/480"
+    },
+    {
+      id: 3,
+      title: "Full Stack Yazılımcı İş İlanı",
+      price: "Maaş: 45.000 ₺",
+      location: "Remote / Türkiye",
+      image: "https://picsum.photos/seed/yazilim/800/480"
+    },
+    {
+      id: 4,
+      title: "Antika Masa Takımı",
+      price: "7.500 ₺",
+      location: "Bursa / Nilüfer",
+      image: "https://picsum.photos/seed/antika/800/480"
+    },
+    {
+      id: 5,
+      title: "Elektrikli Scooter",
+      price: "18.900 ₺",
+      location: "Ankara / Çankaya",
+      image: "https://picsum.photos/seed/scooter/800/480"
     }
-    return true;
-  } catch {
-    return false;
-  }
+  ];
 }
