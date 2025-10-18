@@ -1,7 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import NewListingStep from "./pages/NewListingStep";
-import NewListingFormPlaceholder from "./pages/NewListingFormPlaceholder";
 import Home from "./pages/Home";
 import Kategoriler from "./pages/categories";
 import NewListing from "./pages/NewListing";
@@ -17,21 +15,22 @@ import BottomTabs from "./components/BottomTabs";
 export default function App() {
   return (
     <div className="min-h-screen bg-white">
-      <main className="pb-[88px] safe-bottom">
+      <main className="flex-1 min-h-[calc(100vh-88px)] overflow-y-auto bg-white">
+
         <Routes>
-          <Route path="/kategori/:name" element={<CategoryPage />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/Kategoriler" element={<Kategoriler />} />
-          <Route path="/ilan-ver" element={<NewListing />} />
-          <Route path="/ilan-ver/:slug1" element={<NewListingStep />} />
-<Route path="/ilan-ver/:slug1/:slug2" element={<NewListingStep />} />
-<Route path="/ilan-ver/:slug1/:slug2/:slug3" element={<NewListingStep />} />
-<Route path="/ilan-ver/form" element={<NewListingFormPlaceholder />} />
-          <Route path="/giris" element={<Login />} />
-          <Route path="/bana-ozel" element={<BanaOzel />} />
-          <Route path="/arama" element={<Arama />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/kategori/:name" element={<CategoryPage />} />
+  <Route path="/Kategoriler" element={<Kategoriler />} />
+
+  {/* 🟠 Tek “İlan Ver” rotası */}
+  <Route path="/ilan-ver/*" element={<NewListing />} />
+
+  <Route path="/giris" element={<Login />} />
+  <Route path="/bana-ozel" element={<BanaOzel />} />
+  <Route path="/arama" element={<Arama />} />
+  <Route path="*" element={<NotFound />} />
+</Routes>
+
       </main>
 
       {/* Alt sekme çubuğu her sayfada görünsün */}
