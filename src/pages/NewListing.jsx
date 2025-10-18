@@ -20,9 +20,20 @@ export default function NewListing() {
   }
 
   function handleBack() {
-    if (step === 3) setStep(2);
-    else if (step === 2) setStep(1);
+  if (step === 3) {
+    // Eğer alt kategori seçilmemişse (yani direkt form geldiyse)
+    if (!selectedSubCategory || selectedSubCategory.slug === null) {
+      setStep(1); // doğrudan ana kategoriye dön
+      setSelectedSubCategory(null);
+      setSelectedCategory(null);
+    } else {
+      setStep(2);
+    }
+  } else if (step === 2) {
+    setStep(1);
+    setSelectedCategory(null);
   }
+}
 
   return (
     <div className="mx-auto max-w-2xl p-4 sm:p-6">
