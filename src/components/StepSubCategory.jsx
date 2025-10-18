@@ -12,6 +12,13 @@ export default function StepSubCategory({ category, onBack, onSelect }) {
     return [];
   }, [category]);
 
+   useEffect(() => {
+    if (subs.length === 0 && category) {
+      // Alt kategori yoksa direkt form adımına geç
+      onSelect({ slug: null, title: category.title || category.name });
+    }
+  }, [subs, category, onSelect]);
+  
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
