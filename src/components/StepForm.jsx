@@ -11,6 +11,7 @@ export default function StepForm({ category, subCategory, onBack }) {
   const [imageFile, setImageFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [images, setImages] = useState([]); // çoklu görsellerin listesi
 
   const catLabel = useMemo(
     () =>
@@ -19,6 +20,15 @@ export default function StepForm({ category, subCategory, onBack }) {
         .join(" / "),
     [category, subCategory]
   );
+function handleImageChange(e) {
+  const files = Array.from(e.target.files);
+  const previews = files.map((file) => URL.createObjectURL(file));
+  setImages(previews);
+}
+
+function removeImage(index) {
+  setImages((prev) => prev.filter((_, i) => i !== index));
+}
 
   function validate() {
     const e = {};
@@ -119,19 +129,42 @@ export default function StepForm({ category, subCategory, onBack }) {
           {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="image">Görsel (isteğe bağlı)</label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-            className="block w-full text-sm"
+        <div className="mb-6">
+  <label className="block text-sm font-medium mb-1" htmlFor="images">
+    Görseller (birden fazla seçebilirsiniz)
+  </label>
+  <input
+    id="images"
+    type="file"
+    multiple
+    accept="image/*"
+    onChange={handleImageChange}
+    className="block w-full text-sm border border-gray-300 rounded-xl p-2"
+  />
+
+  {images.length > 0 && (
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mt-3">
+      {images.map((src, i) => (
+        <div key={i} className="relative group">
+          <img
+            src={src}
+            alt={`preview-${i}`}
+            className="w-full h-24 object-cover rounded-lg border border-gray-200 shadow-sm"
           />
-          {imageFile && (
-            <p className="mt-1 text-xs text-gray-600">Seçili dosya: {imageFile.name}</p>
-          )}
+          <button
+            type="button"
+            onClick={() => removeImage(i)}
+            className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+            title="Kaldır"
+          >
+            ✕
+          </button>
         </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
         <div className="pt-2">
           <button
