@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+
+import React, { useMemo, useEffect } from "react";
 import { postingTree } from "../data/postingTree";
 
 export default function StepSubCategory({ category, onBack, onSelect }) {
@@ -18,7 +19,7 @@ export default function StepSubCategory({ category, onBack, onSelect }) {
       onSelect({ slug: null, title: category.title || category.name });
     }
   }, [subs, category, onSelect]);
-  
+
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
