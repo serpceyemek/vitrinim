@@ -21,11 +21,35 @@ export default function StepCategory({ onSelect }) {
           onChange={(e) => setSearch(e.target.value)}
         />
         <button
-          onClick={() => alert('Sesli arama yakında eklenecek 🎙️')}
-          className="rounded-full border border-gray-300 p-2 hover:bg-gray-50"
-        >
-          🎤
-        </button>
+  onClick={() => {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert("Tarayıcınız sesli aramayı desteklemiyor.");
+      return;
+    }
+
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = "tr-TR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setSearch(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      alert("Mikrofon erişiminde bir hata oluştu.");
+    };
+  }}
+  className="rounded-full border border-gray-300 p-2 hover:bg-orange-50 active:bg-orange-100"
+  title="Sesli Arama Başlat"
+>
+  🎤
+</button>
+
       </div>
 
       <ul className="divide-y divide-gray-200 bg-white rounded-xl shadow-sm overflow-hidden">
