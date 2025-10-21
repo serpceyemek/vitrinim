@@ -1,54 +1,103 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "./toast/ToastContext";
 
 export default function StepForm({ category, subCategory, onBack }) {
   const navigate = useNavigate();
 
+  // Temel state'ler
+  const toast = useToast();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [imageFile, setImageFile] = useState(null);
+  const [images, setImages] = useState([]); // [{file, url}]
   const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [images, setImages] = useState([]); // çoklu görsellerin listesi
+  const [removing, setRemoving] = useState(null);
 
-  const catLabel = useMemo(
-    () =>
-      [category?.title || category?.name, subCategory?.title || subCategory?.name]
-        .filter(Boolean)
-        .join(" / "),
-    [category, subCategory]
-  );
-function handleImageChange(e) {
-  const files = Array.from(e.target.files);
-  const previews = files.map((file) => URL.createObjectURL(file));
-  setImages(previews);
-}
+  const MAX_FILES = 8;
+  const MAX_MB = 5;
 
-function removeImage(index) {
-  setImages((prev) => prev.filter((_, i) => i !== index));
-}
+  // 🔸 Görselleri filtreleyip kaydeder
+  function handleImageChange(e) {
+    const incoming = Array.from(e.target.files);
+    const bytesLimit = MAX_MB * 1024 * 1024;
 
-  function validate() {
-    const e = {};
-    if (!title.trim()) e.title = "Başlık zorunlu";
-    if (!price || Number(price) <= 0) e.price = "Fiyat 0'dan büyük olmalı";
-    if (!description.trim()) e.description = "Açıklama zorunlu";
-    if (!location.trim()) e.location = "Konum zorunlu";
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    const validFiles = incoming.filter(
+      (f) => f.type.startsWith("image/") && f.size <= bytesLimit
+    );
+
+    incoming.forEach((f) => {
+      if (f.size > bytesLimit) {
+        toast.push({
+          variant: "error",
+          title: "Dosya boyutu büyük ❌",
+          description: `${f.name} ${MAX_MB} MB sınırını aşıyor.`,
+          duration: 5000,
+        });
+      }
+    });
+
+    setImages((prev) => [
+      ...prev,
+      ...validFiles.map((f) => ({ file: f, url: URL.createObjectURL(f) })),
+    ]);
   }
 
+  function removeImage(index) {
+  setRemoving(index);
+
+  setTimeout(() => {
+    setImages((prev) => {
+      const copy = [...prev];
+      copy.splice(index, 1);
+      return copy;
+    });
+
+    toast.push({
+      variant: "success",
+      title: "Görsel kaldırıldı",
+      description: `#${index + 1} görsel listeden silindi.`,
+      duration: 2800,
+    });
+
+    setRemoving(null);
+  }, 250);
+}
+
+
+  // 🔹 Basit doğrulama
+  function validate() {
+    if (!title.trim() || !price.trim()) {
+      alert("Başlık ve fiyat alanları zorunludur.");
+      return false;
+    }
+    return true;
+  }
+
+  // 🔹 Form gönderimi
   async function handleSubmit(e) {
     e.preventDefault();
     if (!validate()) return;
 
+    setSubmitting(true);
     try {
-      setSubmitting(true);
-      // TODO: API entegrasyonu
-      await new Promise((r) => setTimeout(r, 700));
-      navigate("/", { replace: true });
+      const previewData = {
+  title,
+  price,
+  description,
+  location,
+  images: images.map((img) => ({
+    file: img.file,
+    url: img.url
+  })),
+};
+
+
+      
+
+      sessionStorage.setItem("previewData", JSON.stringify(previewData));
+      navigate("/onizleme");
     } catch (err) {
       console.error(err);
       alert("Bir hata oluştu. Tekrar deneyin.");
@@ -57,8 +106,18 @@ function removeImage(index) {
     }
   }
 
+  const catLabel = useMemo(
+    () =>
+      [category?.title || category?.name, subCategory?.title || subCategory?.name]
+        .filter(Boolean)
+        .join(" / "),
+    [category, subCategory]
+  );
+
+  // 🔸 Arayüz
   return (
-    <div>
+    <div className="max-w-screen-md mx-auto px-4 py-6 pb-24">
+      {/* Üst başlık */}
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={onBack}
@@ -71,108 +130,116 @@ function removeImage(index) {
         </div>
       </div>
 
-      <h1 className="text-2xl font-semibold tracking-tight mb-4">İlan Ver</h1>
+      <h1 className="text-2xl font-semibold mb-4">İlan Ver</h1>
 
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="title">Başlık</label>
+          <label className="block text-sm font-medium mb-1">Başlık</label>
           <input
-            id="title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Örn: Temiz ikinci el masa"
+            className="w-full border rounded-xl px-3 py-2"
           />
-          {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="price">Fiyat (₺)</label>
+          <label className="block text-sm font-medium mb-1">Fiyat (₺)</label>
           <input
-            id="price"
             type="number"
-            inputMode="decimal"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Örn: 2500"
-            min={0}
-            step="0.01"
+            className="w-full border rounded-xl px-3 py-2"
           />
-          {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="description">Açıklama</label>
+          <label className="block text-sm font-medium mb-1">Açıklama</label>
           <textarea
-            id="description"
-            rows={5}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Ürün durumu, ölçüler, teslimat vb."
+            className="w-full border rounded-xl px-3 py-2 h-24 resize-none"
           />
-          {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="location">Konum</label>
+          <label className="block text-sm font-medium mb-1">Konum</label>
           <input
-            id="location"
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="İl / İlçe"
+            className="w-full border rounded-xl px-3 py-2"
           />
-          {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
         </div>
 
-        <div className="mb-6">
-  <label className="block text-sm font-medium mb-1" htmlFor="images">
-    Görseller (birden fazla seçebilirsiniz)
-  </label>
-  <input
-    id="images"
-    type="file"
-    multiple
-    accept="image/*"
-    onChange={handleImageChange}
-    className="block w-full text-sm border border-gray-300 rounded-xl p-2"
-  />
+        {/* Görseller */}
+        <div>
+          <label className="block text-sm font-medium mb-1" htmlFor="images">
+            Görseller (birden fazla seçebilirsiniz)
+            <p className="text-xs text-gray-500 mt-1">
+              Her görsel en fazla {MAX_MB} MB olabilir.
+            </p>
+          </label>
 
-  {images.length > 0 && (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mt-3">
-      {images.map((src, i) => (
-        <div key={i} className="relative group">
-          <img
-            src={src}
-            alt={`preview-${i}`}
-            className="w-full h-24 object-cover rounded-lg border border-gray-200 shadow-sm"
+          <input
+            id="images"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            className="block w-full text-sm"
           />
-          <button
-            type="button"
-            onClick={() => removeImage(i)}
-            className="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
-            title="Kaldır"
-          >
-            ✕
-          </button>
+
+          {/* Sayaç */}
+          <p className="text-xs text-gray-500 mt-2">
+            {images.length}/{MAX_FILES} görsel yüklendi
+          </p>
+
+          {images.length > 0 && (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mt-3">
+              {images.map((img, i) => (
+                <div
+                  key={i}
+                  className={[
+                    "relative group rounded-xl overflow-hidden border transition",
+                    removing === i
+                      ? "opacity-0 scale-95 duration-200"
+                      : "opacity-100 duration-200",
+                  ].join(" ")}
+                >
+                  <img
+                    src={img.url}
+                    alt={`preview-${i}`}
+                    className="w-full aspect-square object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="absolute top-2 right-2 z-10 h-8 w-8 rounded-full bg-white/90 text-gray-700 border shadow hover:bg-white"
+                    aria-label="Görseli kaldır"
+                    title="Görseli kaldır"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ))}
-    </div>
-  )}
-</div>
 
-
-        <div className="pt-2">
+                {/* Gönder butonu */}
+        <div className="mt-6">
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-2xl bg-orange-500 px-4 py-3 text-white font-semibold shadow-sm hover:bg-orange-600 disabled:opacity-60"
+            className="w-full bg-orange-500 text-white py-2 rounded-xl font-medium hover:bg-orange-600 transition"
           >
-            {submitting ? "Gönderiliyor…" : "İlanı Yayınla"}
+            {submitting ? "Gönderiliyor..." : "İlanı Yayınla"}
           </button>
         </div>
       </form>
