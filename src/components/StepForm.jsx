@@ -14,6 +14,8 @@ export default function StepForm({ category, subCategory, onBack }) {
   const [images, setImages] = useState([]); // [{file, url}]
   const [submitting, setSubmitting] = useState(false);
   const [removing, setRemoving] = useState(null);
+// 🔸 Taslak yükleme kontrolü için
+  const [isDraftSaved, setIsDraftSaved] = useState(false);
 
   const MAX_FILES = 8;
   const MAX_MB = 5;
@@ -75,6 +77,18 @@ export default function StepForm({ category, subCategory, onBack }) {
     return true;
   }
 
+  // 🔹 Taslak olarak kaydet
+function handleSaveDraft() {
+  const draftData = {
+    title,
+    price,
+    description,
+    location,
+    images,
+  };
+  localStorage.setItem("draftListing", JSON.stringify(draftData));
+  setIsDraftSaved(true);
+
   // 🔹 Form gönderimi
   async function handleSubmit(e) {
     e.preventDefault();
@@ -92,11 +106,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     url: img.url
   })),
 };
-
-
-      
-
-      sessionStorage.setItem("previewData", JSON.stringify(previewData));
+ sessionStorage.setItem("previewData", JSON.stringify(previewData));
       navigate("/onizleme");
     } catch (err) {
       console.error(err);
@@ -105,6 +115,16 @@ export default function StepForm({ category, subCategory, onBack }) {
       setSubmitting(false);
     }
   }
+
+
+  // 2 saniye sonra uyarıyı sıfırla
+  setTimeout(() => setIsDraftSaved(false), 2000);
+}
+
+
+      
+
+     
 
   const catLabel = useMemo(
     () =>
@@ -148,9 +168,9 @@ export default function StepForm({ category, subCategory, onBack }) {
         <div>
           <label className="block text-sm font-medium mb-1">Fiyat (₺)</label>
           <input
-            type="number"
+            type="text"
             value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            onChange={(e) => setPrice(e.target.value.replace(/\D/g, ""))} // sadece rakamları alır
             placeholder="Örn: 2500"
             className="w-full border rounded-xl px-3 py-2"
           />
@@ -235,10 +255,25 @@ export default function StepForm({ category, subCategory, onBack }) {
                 {/* Gönder butonu */}
         <div className="mt-6">
           <button
+  type="button"
+  onClick={handleSaveDraft}
+  className="w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-medium hover:bg-gray-300 transition"
+>
+  💾 Taslak olarak kaydet
+</button>
+
+{isDraftSaved && (
+  <p className="text-green-600 text-sm text-center mt-1">
+    Taslak kaydedildi!
+  </p>
+)}
+          <button
             type="submit"
             disabled={submitting}
             className="w-full bg-orange-500 text-white py-2 rounded-xl font-medium hover:bg-orange-600 transition"
           >
+            
+
             {submitting ? "Gönderiliyor..." : "İlanı Yayınla"}
           </button>
         </div>
