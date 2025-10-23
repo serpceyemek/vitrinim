@@ -45,21 +45,23 @@ export default function Onizleme() {
           </div>
         )}
 
-                <div className="flex justify-between mt-6 pb-24">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-5 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg transition"
-          >
-            Geri Dön
-          </button>
+                {/* alt kısım: butonlar (alt barda kapanmaması için extra alt boşluk) */}
+<div className="mt-6 pb-28 flex flex-col items-center gap-3">
+  <button
+    onClick={() => navigate(-1)}
+    className="w-full max-w-xs px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium transition"
+  >
+    Geri Dön
+  </button>
 
-          <button
-            onClick={() => navigate("/magaza")}
-            className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition"
-          >
-            Yayına Al
-          </button>
-        </div>
+  <button
+    onClick={() => navigate("/ilan-ver")}   // istersen "/ilan-ver" yapabiliriz
+    className="w-full max-w-xs px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition"
+  >
+    Yayına Al
+  </button>
+</div>
+
       </div>
     </div>
   );
