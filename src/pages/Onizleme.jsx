@@ -28,7 +28,7 @@ export default function Onizleme() {
         <h1 className="text-2xl font-semibold mb-2">İlan Önizlemesi</h1>
         <p className="text-gray-500 mb-4">Ön izleme verisi bulunamadı.</p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/ilan-ver")}
           className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition"
         >
           Ana Sayfaya Dön
