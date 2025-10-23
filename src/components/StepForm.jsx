@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { toast } from "react-hot-toast";
 
 export default function StepForm({ category, subCategory, onBack, onSubmit }) {
   const [title, setTitle] = useState("");
@@ -45,7 +46,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
     );
 
     if (validFiles.length + images.length > MAX_IMAGES) {
-      alert(`En fazla ${MAX_IMAGES} görsel yükleyebilirsiniz.`);
+      toast.error(`En fazla ${MAX_IMAGES} görsel yükleyebilirsiniz.`);
       return;
     }
 
@@ -62,6 +63,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
   // Görsel silme
   const handleRemoveImage = (id) => {
     setImages((prev) => prev.filter((img) => img.id !== id));
+    toast.success("Görsel kaldırıldı");
   };
 
   // Taslak kaydetme
@@ -75,13 +77,13 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
       subCategory: subCategory?.name,
     };
     localStorage.setItem("draftListing", JSON.stringify(payload));
-    alert("Taslak olarak kaydedildi.");
+    toast.success("Taslak olarak kaydedildi");
   };
 
   // Form gönderme
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !price) return alert("Başlık ve fiyat zorunludur.");
+    if (!title || !price) return toast.error("Başlık ve fiyat zorunludur.");
     setSubmitting(true);
 
     try {
@@ -100,10 +102,10 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
         console.log("İlan gönderildi:", payload);
       }
       localStorage.removeItem("draftListing");
-      alert("İlan başarıyla yayınlandı.");
+      toast.success("İlan başarıyla yayınlandı");
     } catch (err) {
       console.error(err);
-      alert("Bir hata oluştu.");
+      toast.error("Bir hata oluştu");
     } finally {
       setSubmitting(false);
     }
