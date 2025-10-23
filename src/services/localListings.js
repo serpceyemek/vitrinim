@@ -59,10 +59,6 @@ export function getPreviewListing() {
   }
 }
 
-export function clearPreviewListing() {
-  localStorage.removeItem("previewListing");
-}
-
 export function clearDraftListing() {
   try { localStorage.removeItem("draftListing"); } catch {}
 }
