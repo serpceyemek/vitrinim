@@ -45,7 +45,7 @@ export default function Onizleme() {
           </div>
         )}
 
-        <div className="flex justify-between mt-6">
+                <div className="flex justify-between mt-6 pb-24">
           <button
             onClick={() => navigate(-1)}
             className="px-5 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg transition"
