@@ -23,11 +23,15 @@ export default function Onizleme() {
   };
 
   const handlePublish = () => {
+  import("../data/listings").then(({ savePublishedListing }) => {
+    savePublishedListing(listing);
     toast.success("İlan başarıyla yayına alındı!");
-    // İleride burada veritabanına kaydetme işlemi yapılacak.
     localStorage.removeItem("draftListing");
     setTimeout(() => navigate("/"), 2000);
-  };
+  });
+};
+
+
 
   return (
     <div className="max-w-screen-md mx-auto p-6">

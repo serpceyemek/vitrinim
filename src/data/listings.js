@@ -1,6 +1,7 @@
 // src/data/listings.js
-import { getLocalListings } from "../services/localListings";
+import { getLocalListings, addLocalListing } from "../services/localListings";
 
+// Statik örnek ilanlar
 export const SEED_LISTINGS = [
   {
     id: 1001,
@@ -30,7 +31,7 @@ export const SEED_LISTINGS = [
     price: 38990,
     image: "",
     categoryId: 4,
-    categoryPath: [3, 4], // üst: ikinci el, alt: elektronik
+    categoryPath: [3, 4],
     postedAt: "2025-08-30",
     location: "Konak, İzmir",
   },
@@ -40,7 +41,7 @@ export const SEED_LISTINGS = [
     price: 485000,
     image: "",
     categoryId: 2,
-    categoryPath: [2],     // Vasıta
+    categoryPath: [2],
     postedAt: "2025-09-03",
     location: "Keçiören, Ankara",
   },
@@ -50,7 +51,7 @@ export const SEED_LISTINGS = [
     price: 2500,
     image: "",
     categoryId: 3,
-    categoryPath: [3],     // İkinci El & Alışveriş
+    categoryPath: [3],
     postedAt: "2025-09-05",
     location: "Nilüfer, Bursa",
   },
@@ -60,24 +61,48 @@ export const SEED_LISTINGS = [
     price: 500,
     image: "",
     categoryId: 6,
-    categoryPath: [6],     // Eğitim
+    categoryPath: [6],
     postedAt: "2025-09-06",
     location: "Bornova, İzmir",
   },
 ];
 
+// Yeni eklenen: Yayına alınan ilanları localStorage'da saklamak için
+export function savePublishedListing(listing) {
+  const all = JSON.parse(localStorage.getItem("publishedListings") || "[]");
+  const newListing = {
+    ...listing,
+    id: Date.now(), // her ilan için benzersiz id
+    isLocal: true,
+    postedAt: new Date().toISOString(),
+  };
+  const updated = [...all, newListing];
+  localStorage.setItem("publishedListings", JSON.stringify(updated));
+  window.dispatchEvent(new Event("storage"));
+}
+
+// LocalStorage’tan yayınlanmış ilanları al
+export function getPublishedListings() {
+  return JSON.parse(localStorage.getItem("publishedListings") || "[]");
+}
+
+// İlan objesini normalize et
 export function normalizeListing(l) {
   const firstImage =
     Array.isArray(l.images) && typeof l.images[0] === "string"
       ? l.images[0]
-      : (l.image || "");
+      : l.image || "";
 
   return {
     id: String(l.id),
     title: l.title || "",
     price: Number(l.price) || 0,
     image: firstImage,
-    images: Array.isArray(l.images) ? l.images : (firstImage ? [firstImage] : []),
+    images: Array.isArray(l.images)
+      ? l.images
+      : firstImage
+      ? [firstImage]
+      : [],
     location: l.location || "",
     postedAt: l.postedAt || new Date().toISOString(),
     categoryId: l.categoryId ?? null,
@@ -87,18 +112,24 @@ export function normalizeListing(l) {
   };
 }
 
+// ID’ye göre tek ilan döndür
 export function getListingById(id) {
-  const all = [...SEED_LISTINGS, ...(getLocalListings() || [])].map(normalizeListing);
+  const all = [
+    ...SEED_LISTINGS,
+    ...(getLocalListings() || []),
+    ...getPublishedListings(),
+  ].map(normalizeListing);
   return all.find((l) => String(l.id) === String(id)) || null;
 }
 
-// Yerel + statik ilanları tek havuzda birleştir ve id'ye göre tekilleştir
+// Tüm ilan havuzunu (statik + yerel + yayınlananlar) döndür
 export function useListingPool() {
   const local = getLocalListings() || [];
+  const published = getPublishedListings() || [];
   const staticOnes = SEED_LISTINGS;
 
   const byId = new Map();
-  for (const raw of [...local, ...staticOnes]) {
+  for (const raw of [...local, ...published, ...staticOnes]) {
     const n = normalizeListing(raw);
     const key = String(n.id);
     if (!byId.has(key)) byId.set(key, n); // yerel varsa öncelik yerelde
