@@ -39,3 +39,26 @@ export function getLocalListings() {
     }
   ];
 }
+
+// --- Önizleme ilanını sakla ve getir --- //
+export function savePreviewListing(listing) {
+  try {
+    localStorage.setItem("previewListing", JSON.stringify(listing));
+  } catch (e) {
+    console.error("Önizleme kaydedilemedi:", e);
+  }
+}
+
+export function getPreviewListing() {
+  try {
+    const raw = localStorage.getItem("previewListing");
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.error("Önizleme okunamadı:", e);
+    return null;
+  }
+}
+
+export function clearPreviewListing() {
+  localStorage.removeItem("previewListing");
+}
