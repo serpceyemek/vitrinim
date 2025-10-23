@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-export default function StepForm({ category, subCategory, onBack, onSubmit }) {
+export default function StepForm({ category, subCategory, onBack }) {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -9,6 +10,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
   const [images, setImages] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const MAX_IMAGES = 8;
   const MAX_MB = 5;
@@ -30,6 +32,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
         setPrice(data.price || "");
         setDescription(data.description || "");
         setLocation(data.location || "");
+        setImages(data.images || []);
       }
     } catch (err) {
       console.warn("Taslak okunamadı:", err);
@@ -41,10 +44,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    const validFiles = files.filter(
-      (f) => f.size / 1024 / 1024 <= MAX_MB
-    );
-
+    const validFiles = files.filter((f) => f.size / 1024 / 1024 <= MAX_MB);
     if (validFiles.length + images.length > MAX_IMAGES) {
       toast.error(`En fazla ${MAX_IMAGES} görsel yükleyebilirsiniz.`);
       return;
@@ -66,13 +66,14 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
     toast.success("Görsel kaldırıldı");
   };
 
-  // Taslak kaydetme
+  // Taslak kaydet
   const handleSaveDraft = () => {
     const payload = {
       title,
       price,
       description,
       location,
+      images,
       category: category?.name,
       subCategory: subCategory?.name,
     };
@@ -80,35 +81,32 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
     toast.success("Taslak olarak kaydedildi");
   };
 
-  // Form gönderme
-  const handleSubmit = async (e) => {
+  // Yayınla → Önizleme
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !price) return toast.error("Başlık ve fiyat zorunludur.");
+    if (!title || !price) {
+      toast.error("Başlık ve fiyat zorunludur.");
+      return;
+    }
+
+    const payload = {
+      title,
+      price,
+      description,
+      location,
+      images,
+      category,
+      subCategory,
+    };
+
+    localStorage.setItem("previewListing", JSON.stringify(payload));
+    toast.success("Ön izleme oluşturuluyor...");
     setSubmitting(true);
 
-    try {
-      const payload = {
-        title,
-        price,
-        description,
-        location,
-        images,
-        category,
-        subCategory,
-      };
-      if (onSubmit) {
-        await onSubmit(payload);
-      } else {
-        console.log("İlan gönderildi:", payload);
-      }
-      localStorage.removeItem("draftListing");
-      toast.success("İlan başarıyla yayınlandı");
-    } catch (err) {
-      console.error(err);
-      toast.error("Bir hata oluştu");
-    } finally {
+    setTimeout(() => {
       setSubmitting(false);
-    }
+      navigate("/onizleme");
+    }, 1000);
   };
 
   return (
@@ -206,7 +204,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
               {images.map((img) => (
                 <div
                   key={img.id}
-                  className="relative w-full aspect-square rounded-xl overflow-hidden border"
+                  className="relative w-full aspect-square rounded-xl overflow-hidden border group"
                 >
                   <img
                     src={img.url}
@@ -216,7 +214,8 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(img.id)}
-                    className="absolute -top-2 -right-2 bg-white border rounded-full w-8 h-8 text-lg leading-8 text-gray-700"
+                    className="absolute -top-2 -right-2 bg-white border rounded-full w-8 h-8 text-lg leading-8 text-gray-700 opacity-70 group-hover:opacity-100 hover:bg-gray-100 transition"
+                    title="Görseli kaldır"
                   >
                     ×
                   </button>
@@ -239,7 +238,7 @@ export default function StepForm({ category, subCategory, onBack, onSubmit }) {
           <button
             type="submit"
             disabled={submitting}
-            className={`flex-1 py-2 rounded-xl font-medium text-white ${
+            className={`flex-1 py-2 rounded-xl font-medium text-white transition ${
               submitting
                 ? "bg-orange-300 cursor-not-allowed"
                 : "bg-orange-500 hover:bg-orange-600"
