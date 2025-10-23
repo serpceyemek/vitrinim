@@ -66,3 +66,21 @@ export function clearDraftListing() {
 export function clearPreviewListing() {
   try { localStorage.removeItem("previewListing"); } catch {}
 }
+
+// --- Yayınlanan ilanı kaydet --- //
+export function publishListing(listing) {
+  try {
+    const all = JSON.parse(localStorage.getItem("publishedListings") || "[]");
+    const newListing = {
+      ...listing,
+      id: Date.now(),
+      isLocal: true,
+      postedAt: new Date().toISOString(),
+    };
+    const updated = [...all, newListing];
+    localStorage.setItem("publishedListings", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage")); // mağaza güncellesin
+  } catch (e) {
+    console.error("Yayınlanmış ilan kaydedilemedi:", e);
+  }
+}
