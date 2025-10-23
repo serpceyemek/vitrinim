@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Home from "./pages/Home";
 import Kategoriler from "./pages/categories";
@@ -8,8 +9,8 @@ import NotFound from "./pages/NotFound";
 import BanaOzel from "./pages/BanaOzel";
 import Arama from "./pages/Arama";
 import CategoryPage from "./pages/CategoryPage";
-import PreviewListing from "./pages/PreviewListing";
 import BottomTabs from "./components/BottomTabs";
+import Onizleme from "./pages/Onizleme";
 
 export default function App() {
   return (
@@ -22,10 +23,19 @@ export default function App() {
         <Route path="/banaozel" element={<BanaOzel />} />
         <Route path="/arama" element={<Arama />} />
         <Route path="/kategori/:id" element={<CategoryPage />} />
-        <Route path="/onizleme" element={<PreviewListing />} />
+        <Route path="/onizleme" element={<Onizleme />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+
       <BottomTabs />
+
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { borderRadius: "12px", background: "#333", color: "#fff" },
+          success: { iconTheme: { primary: "#4ade80", secondary: "#fff" } },
+        }}
+      />
     </>
   );
 }
