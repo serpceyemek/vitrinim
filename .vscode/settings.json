@@ -1,0 +1,6 @@
+{
+  "files.exclude": { "build/**": true },
+  "files.watcherExclude": { "build/**": true },
+  "explorer.autoRevealExclude": { "build/**": true },
+  "search.exclude": { "build/**": true }
+}
