@@ -1,4 +1,3 @@
-// src/pages/Onizleme.jsx
 import { useNavigate } from "react-router-dom";
 import {
   getPreviewListing,
@@ -12,7 +11,6 @@ export default function Onizleme() {
   const navigate = useNavigate();
   const listing = getPreviewListing();
 
-  // Önizleme verisi yoksa: bilgilendir + ilan-ver'e dön
   if (!listing) {
     return (
       <div className="p-6 text-center">
@@ -28,20 +26,19 @@ export default function Onizleme() {
     );
   }
 
-  // Tek yayınla handler’ı: yayınla → toast → verileri temizle → /ilan-ver (reset'li)
   const handlePublish = () => {
     try {
-      publishListing(listing); // yerel listeye ekler
+      publishListing(listing);
       toast.success("İlan yayınlandı!");
     } catch (e) {
       console.error(e);
       toast.error("Yayınlanırken bir sorun oluştu.");
     } finally {
-      // taslak ve önizleme kalıntı bırakmasın
       clearPreviewListing();
       clearDraftListing();
-      // ilan formu tertemiz açılsın
-      navigate("/magaza", { replace: true });
+      setTimeout(() => {
+        navigate("/magaza", { replace: true });
+      }, 1000);
     }
   };
 
@@ -52,7 +49,9 @@ export default function Onizleme() {
       <div className="bg-white shadow-md rounded-xl p-4">
         <h2 className="text-lg font-semibold mb-1">{listing.title}</h2>
         <p className="text-gray-600 mb-1">{listing.description}</p>
-        <p className="text-black font-semibold mb-1">Fiyat: {listing.price} ₺</p>
+        <p className="text-black font-semibold mb-1">
+          Fiyat: {listing.price} ₺
+        </p>
         <p className="text-gray-500 mb-4">Konum: {listing.location}</p>
 
         {Array.isArray(listing.images) && listing.images.length > 0 && (
@@ -69,7 +68,6 @@ export default function Onizleme() {
           </div>
         )}
 
-        {/* alt kısım: butonlar (alt barda kapanmaması için extra alt boşluk) */}
         <div className="mt-6 pb-28 flex flex-col items-center gap-3">
           <button
             onClick={() => navigate(-1)}

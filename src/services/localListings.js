@@ -1,5 +1,3 @@
-// src/services/localListings.js
-
 export function getLocalListings() {
   return [
     {
@@ -7,40 +5,18 @@ export function getLocalListings() {
       title: "3+1 Modern Daire",
       price: "2.150.000 ₺",
       location: "İstanbul / Kadıköy",
-      image: "https://picsum.photos/seed/ev1/800/480"
+      image: "https://picsum.photos/seed/ev1/800/480",
     },
     {
       id: 2,
       title: "SUV 2020 Model",
       price: "950.000 ₺",
       location: "İzmir / Karşıyaka",
-      image: "https://picsum.photos/seed/araba/800/480"
+      image: "https://picsum.photos/seed/araba/800/480",
     },
-    {
-      id: 3,
-      title: "Full Stack Yazılımcı İş İlanı",
-      price: "Maaş: 45.000 ₺",
-      location: "Remote / Türkiye",
-      image: "https://picsum.photos/seed/yazilim/800/480"
-    },
-    {
-      id: 4,
-      title: "Antika Masa Takımı",
-      price: "7.500 ₺",
-      location: "Bursa / Nilüfer",
-      image: "https://picsum.photos/seed/antika/800/480"
-    },
-    {
-      id: 5,
-      title: "Elektrikli Scooter",
-      price: "18.900 ₺",
-      location: "Ankara / Çankaya",
-      image: "https://picsum.photos/seed/scooter/800/480"
-    }
   ];
 }
 
-// --- Önizleme ilanını sakla ve getir --- //
 export function savePreviewListing(listing) {
   try {
     localStorage.setItem("previewListing", JSON.stringify(listing));
@@ -60,14 +36,17 @@ export function getPreviewListing() {
 }
 
 export function clearDraftListing() {
-  try { localStorage.removeItem("draftListing"); } catch {}
+  try {
+    localStorage.removeItem("draftListing");
+  } catch {}
 }
 
 export function clearPreviewListing() {
-  try { localStorage.removeItem("previewListing"); } catch {}
+  try {
+    localStorage.removeItem("previewListing");
+  } catch {}
 }
 
-// --- Yayınlanan ilanı kaydet --- //
 export function publishListing(listing) {
   try {
     const all = JSON.parse(localStorage.getItem("publishedListings") || "[]");
@@ -77,9 +56,9 @@ export function publishListing(listing) {
       isLocal: true,
       postedAt: new Date().toISOString(),
     };
-    const updated = [...all, newListing];
+    const updated = [newListing, ...all];
     localStorage.setItem("publishedListings", JSON.stringify(updated));
-    window.dispatchEvent(new Event("storage")); // mağaza güncellesin
+    window.dispatchEvent(new Event("storage"));
   } catch (e) {
     console.error("Yayınlanmış ilan kaydedilemedi:", e);
   }

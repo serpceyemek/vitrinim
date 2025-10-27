@@ -50,14 +50,25 @@ export default function StepForm({ category, subCategory, onBack }) {
       return;
     }
 
-    const newImages = validFiles.map((file) => ({
-      id: `${Date.now()}_${file.name}`,
-      file,
-      url: URL.createObjectURL(file),
-    }));
+    const readers = validFiles.map(
+      (file) =>
+        new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () =>
+            resolve({
+              id: `${Date.now()}_${file.name}`,
+              file,
+              url: URL.createObjectURL(file),
+              base64: reader.result,
+            });
+          reader.readAsDataURL(file);
+        })
+    );
 
-    setImages((prev) => [...prev, ...newImages]);
-    fileInputRef.current.value = "";
+    Promise.all(readers).then((newImgs) => {
+      setImages((prev) => [...prev, ...newImgs]);
+      fileInputRef.current.value = "";
+    });
   };
 
   // Görsel silme
@@ -94,7 +105,7 @@ export default function StepForm({ category, subCategory, onBack }) {
       price,
       description,
       location,
-      images,
+      images: images.map((i) => i.base64 || i.url),
       category,
       subCategory,
     };
@@ -106,12 +117,11 @@ export default function StepForm({ category, subCategory, onBack }) {
     setTimeout(() => {
       setSubmitting(false);
       navigate("/onizleme");
-    }, 1000);
+    }, 900);
   };
 
   return (
     <div className="max-w-screen-md mx-auto px-4 py-6 pb-24">
-      {/* Üst Başlık */}
       <div className="flex items-center justify-between mb-3">
         <button
           type="button"
@@ -125,12 +135,10 @@ export default function StepForm({ category, subCategory, onBack }) {
         </div>
       </div>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="w-full border rounded-xl px-3 py-4 space-y-4 bg-white"
       >
-        {/* Başlık */}
         <div>
           <label className="block text-sm text-gray-700 mb-1">Başlık</label>
           <input
@@ -142,7 +150,6 @@ export default function StepForm({ category, subCategory, onBack }) {
           />
         </div>
 
-        {/* Fiyat */}
         <div>
           <label className="block text-sm text-gray-700 mb-1">Fiyat (₺)</label>
           <input
@@ -154,7 +161,6 @@ export default function StepForm({ category, subCategory, onBack }) {
           />
         </div>
 
-        {/* Açıklama */}
         <div>
           <label className="block text-sm text-gray-700 mb-1">Açıklama</label>
           <textarea
@@ -166,7 +172,6 @@ export default function StepForm({ category, subCategory, onBack }) {
           />
         </div>
 
-        {/* Konum */}
         <div>
           <label className="block text-sm text-gray-700 mb-1">Konum</label>
           <input
@@ -178,7 +183,6 @@ export default function StepForm({ category, subCategory, onBack }) {
           />
         </div>
 
-        {/* Görseller */}
         <div>
           <label className="block text-sm text-gray-700 mb-2">
             Görseller (birden fazla seçebilirsiniz)
@@ -214,8 +218,9 @@ export default function StepForm({ category, subCategory, onBack }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(img.id)}
-                    className="absolute -top-2 -right-2 bg-white border rounded-full w-8 h-8 text-lg leading-8 text-gray-700 opacity-70 group-hover:opacity-100 hover:bg-gray-100 transition"
                     title="Görseli kaldır"
+                    aria-label="Görseli kaldır"
+                    className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-black/60 text-white grid place-items-center hover:bg-black transition"
                   >
                     ×
                   </button>
@@ -225,7 +230,6 @@ export default function StepForm({ category, subCategory, onBack }) {
           )}
         </div>
 
-        {/* Butonlar */}
         <div className="flex items-center gap-3 pt-2">
           <button
             type="button"
