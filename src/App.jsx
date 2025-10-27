@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Magaza from "./pages/Magaza";
-import StepForm from "./pages/StepForm";
+import StepForm from "./components/StepForm";
 import Onizleme from "./pages/Onizleme";
 import BottomTabs from "./components/BottomTabs";
 
