@@ -1,19 +1,10 @@
-  // src/pages/Home.jsx
-import React, { useEffect, useState } from "react";
+// src/pages/Home.jsx
+import React from "react";
 import { Link } from "react-router-dom";
 import { useListingPool } from "../data/listings";
 
 export default function Home() {
-  const [listings, setListings] = useState([]);
-
-  useEffect(() => {
-    const load = () => setListings(useListingPool());
-    load();
-    // publishedListings güncellenince listeyi yenile
-    const handler = () => load();
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
-  }, []);
+  const listings = useListingPool();  // ✅ Hook doğrudan üst seviyede çağrılıyor
 
   return (
     <div className="max-w-screen-md mx-auto p-5">
