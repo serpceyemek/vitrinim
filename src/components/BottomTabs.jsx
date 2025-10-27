@@ -7,16 +7,19 @@ import "./tabs.css";
 export default function BottomTabs() {
   return (
     <nav className="bottom-nav">
-      <NavLink to="/" className="tab" end>
+      {/* Mağaza */}
+      <NavLink to="/magaza" className="tab">
         <Store className="tab-icon" />
         <span className="tab-text">Mağaza</span>
       </NavLink>
 
+      {/* Arama */}
       <NavLink to="/arama" className="tab">
         <Search className="tab-icon" />
         <span className="tab-text">Arama</span>
       </NavLink>
 
+      {/* İlan Ver */}
       <NavLink to="/ilan-ver" className="tab publish">
         <div className="publish-btn">
           <Plus className="publish-icon" />
@@ -24,11 +27,13 @@ export default function BottomTabs() {
         <span className="tab-text">İlan Ver</span>
       </NavLink>
 
+      {/* Bana Özel */}
       <NavLink to="/bana-ozel" className="tab">
         <Star className="tab-icon" />
         <span className="tab-text">Bana Özel</span>
       </NavLink>
 
+      {/* Profil */}
       <NavLink to="/giris" className="tab">
         <User className="tab-icon" />
         <span className="tab-text">Profilim</span>
