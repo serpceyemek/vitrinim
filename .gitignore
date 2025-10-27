@@ -1,0 +1,25 @@
+# Paketler
+node_modules/
+
+# Derleme çıktıları
+build/
+dist/
+
+# Loglar
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Yerel çevre dosyaları
+.env*
+!.env.example
+
+# Editör/OS artık dosyaları
+.DS_Store
+.vscode/*
+!.vscode/settings.json
+
+# Vercel yerel proje bilgisi
+.vercel/
