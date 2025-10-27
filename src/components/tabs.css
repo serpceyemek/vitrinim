@@ -42,3 +42,13 @@
   box-shadow: 0 6px 16px rgba(0,0,0,.18);
 }
 .publish-icon{ width: 28px; height: 28px; color: #f57c00; stroke-width: 2.6; }
+
+/* Tarayıcı uyumluluğu için appearance düzeltmesi */
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
