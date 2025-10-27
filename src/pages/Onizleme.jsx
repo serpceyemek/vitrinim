@@ -29,7 +29,7 @@ export default function Onizleme() {
   const handlePublish = () => {
     try {
       publishListing(listing);
-      toast.success("İlan yayınlandı!");
+      toast.success("✅ İlan başarıyla yayınlandı!");
     } catch (e) {
       console.error(e);
       toast.error("Yayınlanırken bir sorun oluştu.");
@@ -38,7 +38,7 @@ export default function Onizleme() {
       clearDraftListing();
       setTimeout(() => {
         navigate("/magaza", { replace: true });
-      }, 1000);
+      }, 1200); // Toast görülmeden yönlendirme olmasın
     }
   };
 

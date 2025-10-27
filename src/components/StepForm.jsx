@@ -22,7 +22,6 @@ export default function StepForm({ category, subCategory, onBack }) {
     category?.name ||
     "";
 
-  // Taslak yükleme
   useEffect(() => {
     try {
       const draft = localStorage.getItem("draftListing");
@@ -39,7 +38,6 @@ export default function StepForm({ category, subCategory, onBack }) {
     }
   }, []);
 
-  // Görsel seçme
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -71,13 +69,12 @@ export default function StepForm({ category, subCategory, onBack }) {
     });
   };
 
-  // Görsel silme
+  // Görsel silme + toast
   const handleRemoveImage = (id) => {
     setImages((prev) => prev.filter((img) => img.id !== id));
     toast.success("Görsel kaldırıldı");
   };
 
-  // Taslak kaydet
   const handleSaveDraft = () => {
     const payload = {
       title,
@@ -92,7 +89,6 @@ export default function StepForm({ category, subCategory, onBack }) {
     toast.success("Taslak olarak kaydedildi");
   };
 
-  // Yayınla → Önizleme
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title || !price) {
@@ -111,7 +107,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     };
 
     localStorage.setItem("previewListing", JSON.stringify(payload));
-    toast.success("Ön izleme oluşturuluyor...");
+    toast.success("Ön izleme hazırlanıyor...");
     setSubmitting(true);
 
     setTimeout(() => {
@@ -220,7 +216,7 @@ export default function StepForm({ category, subCategory, onBack }) {
                     onClick={() => handleRemoveImage(img.id)}
                     title="Görseli kaldır"
                     aria-label="Görseli kaldır"
-                    className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-black/60 text-white grid place-items-center hover:bg-black transition"
+                    className="absolute top-1 right-1 w-7 h-7 bg-white/80 text-gray-800 rounded-full text-lg leading-6 font-bold shadow hover:bg-white transition"
                   >
                     ×
                   </button>
