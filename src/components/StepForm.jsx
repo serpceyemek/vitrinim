@@ -22,6 +22,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     category?.name ||
     "";
 
+  // Taslak yükleme
   useEffect(() => {
     try {
       const draft = localStorage.getItem("draftListing");
@@ -38,6 +39,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     }
   }, []);
 
+  // Görsel seçme
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -48,33 +50,23 @@ export default function StepForm({ category, subCategory, onBack }) {
       return;
     }
 
-    const readers = validFiles.map(
-      (file) =>
-        new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () =>
-            resolve({
-              id: `${Date.now()}_${file.name}`,
-              file,
-              url: URL.createObjectURL(file),
-              base64: reader.result,
-            });
-          reader.readAsDataURL(file);
-        })
-    );
+    const newImages = validFiles.map((file) => ({
+      id: `${Date.now()}_${file.name}`,
+      file,
+      url: URL.createObjectURL(file),
+    }));
 
-    Promise.all(readers).then((newImgs) => {
-      setImages((prev) => [...prev, ...newImgs]);
-      fileInputRef.current.value = "";
-    });
+    setImages((prev) => [...prev, ...newImages]);
+    fileInputRef.current.value = "";
   };
 
-  // Görsel silme + toast
+  // Görsel silme
   const handleRemoveImage = (id) => {
     setImages((prev) => prev.filter((img) => img.id !== id));
     toast.success("Görsel kaldırıldı");
   };
 
+  // Taslak kaydet
   const handleSaveDraft = () => {
     const payload = {
       title,
@@ -89,6 +81,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     toast.success("Taslak olarak kaydedildi");
   };
 
+  // Yayınla → Önizleme
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title || !price) {
@@ -101,19 +94,19 @@ export default function StepForm({ category, subCategory, onBack }) {
       price,
       description,
       location,
-      images: images.map((i) => i.base64 || i.url),
+      images,
       category,
       subCategory,
     };
 
     localStorage.setItem("previewListing", JSON.stringify(payload));
-    toast.success("Ön izleme hazırlanıyor...");
+    toast.success("Ön izleme oluşturuluyor...");
     setSubmitting(true);
 
     setTimeout(() => {
       setSubmitting(false);
       navigate("/onizleme");
-    }, 900);
+    }, 1200);
   };
 
   return (
@@ -214,9 +207,8 @@ export default function StepForm({ category, subCategory, onBack }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(img.id)}
+                    className="absolute -top-2 -right-2 bg-white border rounded-full w-8 h-8 text-lg leading-8 text-gray-700 opacity-70 group-hover:opacity-100 hover:bg-gray-100 transition"
                     title="Görseli kaldır"
-                    aria-label="Görseli kaldır"
-                    className="absolute top-1 right-1 w-7 h-7 bg-white/80 text-gray-800 rounded-full text-lg leading-6 font-bold shadow hover:bg-white transition"
                   >
                     ×
                   </button>
@@ -237,14 +229,9 @@ export default function StepForm({ category, subCategory, onBack }) {
 
           <button
             type="submit"
-            disabled={submitting}
-            className={`flex-1 py-2 rounded-xl font-medium text-white transition ${
-              submitting
-                ? "bg-orange-300 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600"
-            }`}
+            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-xl font-medium transition"
           >
-            {submitting ? "Gönderiliyor..." : "İlanı Yayınla"}
+            İlanı Yayınla
           </button>
         </div>
       </form>

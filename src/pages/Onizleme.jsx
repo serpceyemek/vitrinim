@@ -17,7 +17,7 @@ export default function Onizleme() {
         <h1 className="text-2xl font-semibold mb-2">İlan Önizlemesi</h1>
         <p className="text-gray-600 mb-6">Ön izleme verisi bulunamadı.</p>
         <button
-          onClick={() => navigate("/magaza")}
+          onClick={() => navigate("/ilan-ver")}
           className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
         >
           İlan Ver Sayfasına Dön
@@ -29,16 +29,16 @@ export default function Onizleme() {
   const handlePublish = () => {
     try {
       publishListing(listing);
-      toast.success("✅ İlan başarıyla yayınlandı!");
+      toast.success("İlan yayınlandı!");
+      clearPreviewListing();
+      clearDraftListing();
+
+      setTimeout(() => {
+        navigate("/magaza", { replace: true });
+      }, 1500);
     } catch (e) {
       console.error(e);
       toast.error("Yayınlanırken bir sorun oluştu.");
-    } finally {
-      clearPreviewListing();
-      clearDraftListing();
-      setTimeout(() => {
-        navigate("/magaza", { replace: true });
-      }, 1200); // Toast görülmeden yönlendirme olmasın
     }
   };
 
@@ -49,17 +49,15 @@ export default function Onizleme() {
       <div className="bg-white shadow-md rounded-xl p-4">
         <h2 className="text-lg font-semibold mb-1">{listing.title}</h2>
         <p className="text-gray-600 mb-1">{listing.description}</p>
-        <p className="text-black font-semibold mb-1">
-          Fiyat: {listing.price} ₺
-        </p>
+        <p className="text-black font-semibold mb-1">Fiyat: {listing.price} ₺</p>
         <p className="text-gray-500 mb-4">Konum: {listing.location}</p>
 
         {Array.isArray(listing.images) && listing.images.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-            {listing.images.map((src, i) => (
+            {listing.images.map((img, i) => (
               <img
                 key={i}
-                src={src}
+                src={img.url || img}
                 alt={`görsel-${i}`}
                 className="w-full h-40 object-cover rounded-md border"
                 loading="lazy"
