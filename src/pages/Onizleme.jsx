@@ -41,7 +41,7 @@ export default function Onizleme() {
       clearPreviewListing();
       clearDraftListing();
       // ilan formu tertemiz açılsın
-      navigate("/ilan-ver", { replace: true, state: { reset: true } });
+      navigate("/magaza", { replace: true });
     }
   };
 
