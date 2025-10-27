@@ -9,6 +9,7 @@ import BanaOzel from "./pages/BanaOzel";
 import Arama from "./pages/Arama";
 import CategoryPage from "./pages/CategoryPage";
 import Onizleme from "./pages/Onizleme";
+import ListingDetail from "./pages/ListingDetail"; // ← yeni
 
 import BottomTabs from "./components/BottomTabs";
 
@@ -16,10 +17,10 @@ export default function App() {
   return (
     <>
       <Routes>
-        {/* AÇILIŞ: Artık Arama sayfası */}
+        {/* AÇILIŞ: Arama sayfası */}
         <Route path="/" element={<Arama />} />
 
-        {/* Mağaza (eski ana sayfa) */}
+        {/* Mağaza */}
         <Route path="/magaza" element={<Home />} />
 
         {/* Diğer sayfalar */}
@@ -31,7 +32,10 @@ export default function App() {
         <Route path="/kategori/:id" element={<CategoryPage />} />
         <Route path="/onizleme" element={<Onizleme />} />
 
-        {/* Eski linkleri toparlamak için (opsiyonel) */}
+        {/* İLAN DETAY */}
+        <Route path="/ilan/:id" element={<ListingDetail />} />
+
+        {/* Eski link toparlama (opsiyonel) */}
         <Route path="/home" element={<Navigate to="/magaza" replace />} />
 
         {/* 404 */}
