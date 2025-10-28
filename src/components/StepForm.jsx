@@ -39,6 +39,19 @@ export default function StepForm({ category, subCategory, onBack }) {
     }
   }, []);
 
+  // Oluşturulan URL'leri temizle (hafıza sızıntısını önle)
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => {
+        if (img.url?.startsWith("blob:")) {
+          try {
+            URL.revokeObjectURL(img.url);
+          } catch {}
+        }
+      });
+    };
+  }, [images]);
+
   // Görsel seçme
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
@@ -57,7 +70,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     }));
 
     setImages((prev) => [...prev, ...newImages]);
-    fileInputRef.current.value = "";
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   // Görsel silme
@@ -74,8 +87,8 @@ export default function StepForm({ category, subCategory, onBack }) {
       description,
       location,
       images,
-      category: category?.name,
-      subCategory: subCategory?.name,
+      category: category?.name || category?.title,
+      subCategory: subCategory?.name || subCategory?.title,
     };
     localStorage.setItem("draftListing", JSON.stringify(payload));
     toast.success("Taslak olarak kaydedildi");
@@ -84,19 +97,43 @@ export default function StepForm({ category, subCategory, onBack }) {
   // Yayınla → Önizleme
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !price) {
+
+    // Basit doğrulamalar
+    if (!title.trim() || !price) {
       toast.error("Başlık ve fiyat zorunludur.");
       return;
     }
 
+    const numericPrice = Number(price);
+    if (Number.isNaN(numericPrice) || numericPrice < 0) {
+      toast.error("Lütfen geçerli bir fiyat girin.");
+      return;
+    }
+
+    if (description.trim().length < 100) {
+      toast("Açıklamayı biraz daha detaylandırın (min. 100 karakter).", {
+        icon: "📝",
+      });
+      return;
+    }
+
+    if (location.trim().length < 5) {
+      toast("Konumu biraz daha net belirtin (İl / İlçe).", { icon: "📍" });
+      return;
+    }
+
     const payload = {
-      title,
-      price,
-      description,
-      location,
+      id: `pub_${Date.now()}`,
+      title: title.trim(),
+      price: numericPrice,
+      description: description.trim(),
+      location: location.trim(),
       images,
       category,
       subCategory,
+      date: new Date().toISOString(),
+      // Mağaza'da "Yeni" etiketi için kullanılabilir
+      publishedAt: Date.now(),
     };
 
     localStorage.setItem("previewListing", JSON.stringify(payload));
@@ -106,7 +143,7 @@ export default function StepForm({ category, subCategory, onBack }) {
     setTimeout(() => {
       setSubmitting(false);
       navigate("/onizleme");
-    }, 1200);
+    }, 900);
   };
 
   return (
@@ -133,20 +170,32 @@ export default function StepForm({ category, subCategory, onBack }) {
           <input
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setTitle(v);
+              if (v.length > 0 && v.length < 6) {
+                toast("Başlığı biraz daha netleştirin.", { icon: "✍️" });
+              }
+            }}
+            maxLength={120}
             className="w-full border rounded-xl px-4 py-2 outline-none"
             placeholder="İlan başlığı"
           />
+          <div className="text-xs text-gray-500 mt-1">
+            {title.length}/120 karakter
+          </div>
         </div>
 
         <div>
           <label className="block text-sm text-gray-700 mb-1">Fiyat (₺)</label>
           <input
             type="number"
+            inputMode="numeric"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             className="w-full border rounded-xl px-4 py-2 outline-none"
             placeholder="0"
+            min="0"
           />
         </div>
 
@@ -155,10 +204,20 @@ export default function StepForm({ category, subCategory, onBack }) {
           <textarea
             rows={4}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setDescription(value);
+              if (value.length > 0 && value.length < 100) {
+                toast("Biraz daha detay verebilir misiniz?", { icon: "📝" });
+              }
+            }}
+            maxLength={1000}
             className="w-full border rounded-xl px-4 py-2 outline-none resize-y"
             placeholder="İlan hakkında detaylar"
           />
+          <div className="text-xs text-gray-500 mt-1">
+            {description.length}/1000 karakter
+          </div>
         </div>
 
         <div>
@@ -166,10 +225,20 @@ export default function StepForm({ category, subCategory, onBack }) {
           <input
             type="text"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setLocation(value);
+              if (value.length > 0 && value.length < 5) {
+                toast("Konumu biraz daha net belirtin.", { icon: "📍" });
+              }
+            }}
+            maxLength={120}
             className="w-full border rounded-xl px-4 py-2 outline-none"
             placeholder="İl / İlçe"
           />
+          <div className="text-xs text-gray-500 mt-1">
+            {location.length}/120 karakter
+          </div>
         </div>
 
         <div>
@@ -177,7 +246,8 @@ export default function StepForm({ category, subCategory, onBack }) {
             Görseller (birden fazla seçebilirsiniz)
           </label>
           <p className="text-xs text-gray-500 mb-2">
-            Her görsel en fazla {MAX_MB} MB olabilir.
+            Her görsel en fazla {MAX_MB} MB olabilir. Toplam {MAX_IMAGES} görsel
+            yükleyebilirsiniz.
           </p>
 
           <input
@@ -229,9 +299,10 @@ export default function StepForm({ category, subCategory, onBack }) {
 
           <button
             type="submit"
-            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-xl font-medium transition"
+            disabled={submitting}
+            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-xl font-medium transition disabled:opacity-70"
           >
-            İlanı Yayınla
+            {submitting ? "İşleniyor..." : "İlanı Yayınla"}
           </button>
         </div>
       </form>

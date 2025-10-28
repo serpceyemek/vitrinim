@@ -1,87 +1,45 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getPreviewListing,
-  publishListing,
-  clearDraftListing,
-  clearPreviewListing,
-} from "../services/localListings";
-import { toast } from "react-hot-toast";
 
 export default function Onizleme() {
   const navigate = useNavigate();
-  const listing = getPreviewListing();
+  const data = JSON.parse(localStorage.getItem("previewListing"));
 
-  if (!listing) {
+  if (!data) {
     return (
       <div className="p-6 text-center">
-        <h1 className="text-2xl font-semibold mb-2">İlan Önizlemesi</h1>
-        <p className="text-gray-600 mb-6">Ön izleme verisi bulunamadı.</p>
+        <p className="text-gray-600 mb-4">Görüntülenecek ilan bulunamadı.</p>
         <button
           onClick={() => navigate("/ilan-ver")}
-          className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+          className="bg-orange-500 text-white px-4 py-2 rounded-lg"
         >
-          İlan Ver Sayfasına Dön
+          Yeni İlan Ver
         </button>
       </div>
     );
   }
 
-  const handlePublish = () => {
-    try {
-      publishListing(listing);
-      toast.success("İlan yayınlandı!");
-      clearPreviewListing();
-      clearDraftListing();
-
-      setTimeout(() => {
-        navigate("/magaza", { replace: true });
-      }, 1500);
-    } catch (e) {
-      console.error(e);
-      toast.error("Yayınlanırken bir sorun oluştu.");
-    }
-  };
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">İlan Önizlemesi</h1>
+    <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow">
+      <h2 className="text-2xl font-bold mb-1">{data.title}</h2>
+      <p className="text-lg text-gray-800 mb-3">
+        Fiyat: <span className="font-semibold">{data.price} ₺</span>
+      </p>
+      <p className="text-gray-600 mb-2">{data.description}</p>
+      <p className="text-gray-500 mb-4">Konum: {data.location}</p>
 
-      <div className="bg-white shadow-md rounded-xl p-4">
-        <h2 className="text-lg font-semibold mb-1">{listing.title}</h2>
-        <p className="text-gray-600 mb-1">{listing.description}</p>
-        <p className="text-black font-semibold mb-1">Fiyat: {listing.price} ₺</p>
-        <p className="text-gray-500 mb-4">Konum: {listing.location}</p>
-
-        {Array.isArray(listing.images) && listing.images.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-            {listing.images.map((img, i) => (
-              <img
-                key={i}
-                src={img.url || img}
-                alt={`görsel-${i}`}
-                className="w-full h-40 object-cover rounded-md border"
-                loading="lazy"
-              />
-            ))}
-          </div>
-        )}
-
-        <div className="mt-6 pb-28 flex flex-col items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-full max-w-xs px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium transition"
-          >
-            Geri Dön
-          </button>
-
-          <button
-            onClick={handlePublish}
-            className="w-full max-w-xs px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition"
-          >
-            Yayına Al
-          </button>
-        </div>
+      <div className="grid grid-cols-3 gap-2">
+        {data.images?.map((img, i) => (
+          <img key={i} src={img.url} alt={`img-${i}`} className="w-full h-24 object-cover rounded-xl" />
+        ))}
       </div>
+
+      <button
+        onClick={() => navigate("/magaza")}
+        className="mt-6 w-full bg-orange-500 text-white py-2 rounded-xl font-medium hover:bg-orange-600"
+      >
+        Mağazaya Dön
+      </button>
     </div>
   );
 }

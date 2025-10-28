@@ -1,5 +1,4 @@
-// src/pages/NewListing.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StepCategory from "../components/StepCategory";
 import StepSubCategory from "../components/StepSubCategory";
 import StepForm from "../components/StepForm";
@@ -9,6 +8,14 @@ export default function NewListing() {
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+
+  // Sayfadan çıkışta—taslak ve önizleme kalıntılarını temizle
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("draftListing");
+      localStorage.removeItem("previewListing");
+    };
+  }, []);
 
   function handleCategorySelect(category) {
     setSelectedCategory(category);
@@ -20,7 +27,7 @@ export default function NewListing() {
     setStep(3);
   }
 
-  // Geri davranışı (alt kategorisiz akış dâhil) — önceki düzeltmemizi koruyoruz
+  // Geri davranışı (alt kategorisiz akış dahil)
   function handleBack() {
     if (step === 3) {
       if (!selectedSubCategory || selectedSubCategory.slug === null) {
@@ -36,7 +43,7 @@ export default function NewListing() {
     }
   }
 
-  // Breadcrumb tıklamaları:
+  // Breadcrumb tıklamaları
   function goToRoot() {
     setStep(1);
     setSelectedCategory(null);
