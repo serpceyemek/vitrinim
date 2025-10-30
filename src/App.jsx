@@ -1,8 +1,8 @@
+// src/App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // SAYFALAR
-import Home from "./pages/Home";
 import Arama from "./pages/Arama";
 import Magaza from "./pages/Magaza";
 import NewListing from "./pages/NewListing";
@@ -19,13 +19,18 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Uygulama açılışı: Arama */}
+        <Route path="/" element={<Navigate to="/arama" replace />} />
+
+        {/* Sayfalar */}
         <Route path="/arama" element={<Arama />} />
         <Route path="/magaza" element={<Magaza />} />
         <Route path="/ilan-ver" element={<NewListing />} />
         <Route path="/onizleme" element={<Onizleme />} />
         <Route path="/profilim" element={<Profilim />} />
         <Route path="/bana-ozel" element={<BanaOzel />} />
+
+        {/* Eski URL & 404 */}
         <Route path="/index.html" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
