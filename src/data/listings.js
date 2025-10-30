@@ -1,5 +1,5 @@
 // src/data/listings.js
-import { getLocalListings, addLocalListing } from "../services/localListings";
+import { getLocalListings } from "../services/localListings";
 
 // Statik örnek ilanlar
 export const SEED_LISTINGS = [
