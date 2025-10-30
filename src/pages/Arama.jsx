@@ -1,145 +1,84 @@
-// src/pages/Arama.jsx
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { postingTree } from "../data/postingTree";
-import { ChevronRight, ArrowLeft, Home, Mic } from "lucide-react";
+import { useState } from "react";
+import categories from "../data/categories";
 
 export default function Arama() {
-  const [path, setPath] = useState([]); // örn: ["emlak", "konut", "satilik"]
-  const navigate = useNavigate();
+  const [path, setPath] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const currentNode = path.reduce((acc, key) => acc?.children?.[key], categories);
 
-  // 🔹 Kök anahtarlar
-  const rootKeys = useMemo(
-    () => Object.keys(postingTree).filter((k) => !k.includes("/")),
-    []
-  );
-
-  // 🔹 Şu anki dal
-  const currentKey = path.join("/");
-  const currentNode = path.length === 0 ? null : postingTree[currentKey] || null;
-
-  // 🔹 Breadcrumb (Emlak › Konut › Satılık)
-  const breadcrumb = useMemo(() => {
-    if (path.length === 0) return [];
-    return path.map((_, i) => {
-      const key = path.slice(0, i + 1).join("/");
-      return postingTree[key]?.title || key;
-    });
-  }, [path]);
-
-  // 🔹 Üst kategoriye tıklama
-  const handleSelectRoot = (rootKey) => setPath([rootKey]);
-
-  // 🔹 Alt dal seçimi
-  const handleSelectChild = (slug) => {
-    const newPath = [...path, slug];
-    const nextKey = newPath.join("/");
-
-    if (postingTree[nextKey]) {
-      setPath(newPath);
-    } else {
-      // 🌳 Hayat Ağacı: seçilen dalı kaydet
-      const selectedChild = currentNode?.children?.find((c) => c.slug === slug);
-      const selectedTitle =
-        (currentNode?.title || "") + " › " + (selectedChild?.title || slug);
-
-      localStorage.setItem("selectedCategoryPath", JSON.stringify(newPath));
-      localStorage.setItem("selectedCategoryTitle", selectedTitle);
-
-      const leafCat = `${currentKey}/${slug}`;
-      setTimeout(() => {
-        navigate(`/magaza?cat=${encodeURIComponent(leafCat)}`, {
-          replace: true,
-        });
-      }, 100);
+  const handleCategoryClick = (key) => {
+    if (currentNode?.children?.[key]) {
+      setPath([...path, key]);
+      setSearchTerm("");
     }
   };
 
   const handleBack = () => {
-    if (path.length > 0) setPath(path.slice(0, -1));
+    setPath(path.slice(0, -1));
+    setSearchTerm("");
   };
 
-  const handleHome = () => setPath([]);
+  const filteredCategories = Object.entries(currentNode?.children || {}).filter(
+    ([key, value]) =>
+      key.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      value?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="min-h-[calc(100vh-88px)] bg-white p-4 pb-[88px] max-w-2xl mx-auto">
-      {/* 🔸 Başlık ve kontrol butonları */}
-      <div className="flex items-center justify-between mb-4 px-2">
-        <h1 className="text-xl font-semibold text-gray-800">
-          {currentNode ? currentNode.title : "Kategoriler"}
-        </h1>
+    <div className="min-h-[calc(100vh-88px)] flex flex-col items-center bg-white pt-6 pb-24 px-4">
+      {/* Başlık */}
+      <h2 className="text-lg font-semibold mb-4 text-center">Arama</h2>
 
-        <div className="flex gap-3">
-          {path.length > 0 && (
-            <>
-              <button
-                onClick={handleBack}
-                className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+      <div className="w-full max-w-md">
+        {/* Arama kutusu */}
+        <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 shadow-sm mb-4">
+          <input
+            type="text"
+            placeholder="Kategori veya ilan adı ile ara..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm"
+          />
+          {/* Mikrofon aktif ve görünür */}
+          <button
+            className="text-orange-500 ml-2 hover:text-orange-600 transition"
+            title="Sesli Arama"
+          >
+            🎤
+          </button>
+        </div>
+
+        {/* Geri - Ana Sayfa */}
+        {path.length > 0 && (
+          <div className="flex justify-start items-center gap-3 text-sm text-gray-600 mb-2">
+            <button onClick={handleBack} className="text-blue-600 font-medium">
+              ← Geri
+            </button>
+            <span>/</span>
+            <button onClick={() => setPath([])} className="text-blue-600 font-medium">
+              Ana Sayfa
+            </button>
+          </div>
+        )}
+
+        {/* Kategoriler */}
+        <div className="grid gap-2">
+          {filteredCategories.length > 0 ? (
+            filteredCategories.map(([key, value]) => (
+              <div
+                key={key}
+                onClick={() => handleCategoryClick(key)}
+                className="flex justify-between items-center bg-gray-100 hover:bg-gray-200 rounded-lg px-4 py-3 cursor-pointer transition"
               >
-                <ArrowLeft size={16} /> Geri
-              </button>
-              <button
-                onClick={handleHome}
-                className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800"
-              >
-                <Home size={16} /> Ana Sayfa
-              </button>
-            </>
+                <span className="text-gray-700 font-medium">{value.title}</span>
+                <span className="text-gray-400">›</span>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-10">Alt kategori bulunamadı.</p>
           )}
         </div>
       </div>
-
-      {/* 🔍 Arama çubuğu */}
-      <div className="mb-4 flex items-center bg-gray-100 rounded-full px-4 py-2 shadow-sm">
-        <input
-          type="text"
-          placeholder="Kategori veya ilan adı ile ara..."
-          className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-500"
-        />
-        <button className="ml-2 text-orange-500 hover:text-orange-600">
-          <Mic size={18} />
-        </button>
-      </div>
-
-      {/* 🔸 Breadcrumb (yol göstergesi) */}
-      {breadcrumb.length > 0 && (
-        <div className="text-sm text-gray-500 mb-3 px-2">
-          {breadcrumb.join(" › ")}
-        </div>
-      )}
-
-      {/* 🔸 Kategori listesi (dikey görünüm, İlan Ver ile hizalı) */}
-      <div className="flex flex-col gap-2 px-2">
-        {(path.length === 0 ? rootKeys : currentNode?.children || []).map(
-          (item) => {
-            const slug = path.length === 0 ? item : item.slug;
-            const title =
-              path.length === 0 ? postingTree[item]?.title : item.title;
-            const handleClick = () =>
-              path.length === 0
-                ? handleSelectRoot(slug)
-                : handleSelectChild(slug);
-
-            return (
-              <div
-                key={slug}
-                onClick={handleClick}
-                className="cursor-pointer flex justify-between items-center bg-gray-100 hover:bg-gray-200 rounded-lg px-4 py-3 transition-all"
-              >
-                <span className="text-gray-800 font-medium">{title}</span>
-                <ChevronRight size={18} className="text-gray-500" />
-              </div>
-            );
-          }
-        )}
-      </div>
-
-      {/* 🔸 Alt kategori yoksa uyarı */}
-      {path.length > 0 && !currentNode?.children?.length && (
-        <div className="text-gray-500 text-center mt-10">
-          Alt kategori bulunamadı.
-        </div>
-      )}
     </div>
   );
 }
