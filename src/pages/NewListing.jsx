@@ -9,25 +9,30 @@ export default function NewListing() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
-  // Sayfadan çıkışta—taslak ve önizleme kalıntılarını temizle
+  // Sayfaya girildiğinde ve çıkıldığında taslak + önizleme kalıntılarını temizle
   useEffect(() => {
+    localStorage.removeItem("draftListing");
+    localStorage.removeItem("previewListing");
+
     return () => {
       localStorage.removeItem("draftListing");
       localStorage.removeItem("previewListing");
     };
   }, []);
 
+  // Kategori seçimi → alt kategori adımına geç
   function handleCategorySelect(category) {
     setSelectedCategory(category);
     setStep(2);
   }
 
+  // Alt kategori seçimi → form adımına geç
   function handleSubCategorySelect(sub) {
     setSelectedSubCategory(sub);
     setStep(3);
   }
 
-  // Geri davranışı (alt kategorisiz akış dahil)
+  // Geri butonu davranışı
   function handleBack() {
     if (step === 3) {
       if (!selectedSubCategory || selectedSubCategory.slug === null) {
@@ -49,6 +54,7 @@ export default function NewListing() {
     setSelectedCategory(null);
     setSelectedSubCategory(null);
   }
+
   function goToCategory() {
     setStep(2);
     setSelectedSubCategory(null);
