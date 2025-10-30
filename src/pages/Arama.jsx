@@ -1,13 +1,20 @@
 import { useState } from "react";
-import categories from "../data/categories";
+import { rootCategories } from "../data/categories";
+// Eğer verin postingTree.js'deyse yukarıyı yorum satırı yapıp şu satırı aç:
+ // import { postingTree as rootCategories } from "../data/postingTree";
 
 export default function Arama() {
   const [path, setPath] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const currentNode = path.reduce((acc, key) => acc?.children?.[key], categories);
+
+  // Aktif kategori düğümünü bul
+  const currentNode = path.reduce(
+    (acc, key) => (acc && acc.children ? acc.children[key] : null),
+    rootCategories
+  );
 
   const handleCategoryClick = (key) => {
-    if (currentNode?.children?.[key]) {
+    if (currentNode && currentNode.children && currentNode.children[key]) {
       setPath([...path, key]);
       setSearchTerm("");
     }
@@ -18,10 +25,10 @@ export default function Arama() {
     setSearchTerm("");
   };
 
-  const filteredCategories = Object.entries(currentNode?.children || {}).filter(
-    ([key, value]) =>
-      key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      value?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = Object.entries(currentNode?.children || {}).filter(
+    ([k, v]) =>
+      k.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (v.title && v.title.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -39,7 +46,6 @@ export default function Arama() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-transparent outline-none text-sm"
           />
-          {/* Mikrofon aktif ve görünür */}
           <button
             className="text-orange-500 ml-2 hover:text-orange-600 transition"
             title="Sesli Arama"
@@ -48,9 +54,9 @@ export default function Arama() {
           </button>
         </div>
 
-        {/* Geri - Ana Sayfa */}
+        {/* Geri / Ana Sayfa */}
         {path.length > 0 && (
-          <div className="flex justify-start items-center gap-3 text-sm text-gray-600 mb-2">
+          <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
             <button onClick={handleBack} className="text-blue-600 font-medium">
               ← Geri
             </button>
@@ -63,8 +69,8 @@ export default function Arama() {
 
         {/* Kategoriler */}
         <div className="grid gap-2">
-          {filteredCategories.length > 0 ? (
-            filteredCategories.map(([key, value]) => (
+          {filtered.length > 0 ? (
+            filtered.map(([key, value]) => (
               <div
                 key={key}
                 onClick={() => handleCategoryClick(key)}
