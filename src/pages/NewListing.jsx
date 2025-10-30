@@ -5,11 +5,17 @@ import StepForm from "../components/StepForm";
 import BreadcrumbPath from "../components/BreadcrumbPath";
 
 export default function NewListing() {
+  // 🔹 Adım kontrolü (1=Kategori, 2=Alt kategori, 3=Form)
   const [step, setStep] = useState(1);
+
+  // 🔹 Seçilen kategori ve alt kategori
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
-  // Sayfaya girildiğinde ve çıkıldığında taslak + önizleme kalıntılarını temizle
+  // 🌳 Hayat Ağacı: Arama sayfasında seçilen kategori başlığı
+  const [selectedCategoryTitle, setSelectedCategoryTitle] = useState("");
+
+  // 🧹 Sayfaya girildiğinde ve çıkıldığında taslak + önizleme kalıntılarını temizle
   useEffect(() => {
     localStorage.removeItem("draftListing");
     localStorage.removeItem("previewListing");
@@ -20,72 +26,67 @@ export default function NewListing() {
     };
   }, []);
 
-  // Kategori seçimi → alt kategori adımına geç
-  function handleCategorySelect(category) {
-    setSelectedCategory(category);
-    setStep(2);
-  }
+  // 🌳 Hayat Ağacı: seçilen kategori başlığını localStorage'dan oku
+  useEffect(() => {
+    const savedTitle = localStorage.getItem("selectedCategoryTitle");
+    if (savedTitle) setSelectedCategoryTitle(savedTitle);
+  }, []);
 
-  // Alt kategori seçimi → form adımına geç
-  function handleSubCategorySelect(sub) {
-    setSelectedSubCategory(sub);
-    setStep(3);
-  }
+  // 🔹 Geri veya ileri adım butonları (isteğe göre değişebilir)
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  // Geri butonu davranışı
-  function handleBack() {
-    if (step === 3) {
-      if (!selectedSubCategory || selectedSubCategory.slug === null) {
-        setStep(1);
-        setSelectedSubCategory(null);
-        setSelectedCategory(null);
-      } else {
-        setStep(2);
-      }
-    } else if (step === 2) {
-      setStep(1);
-      setSelectedCategory(null);
+  // 🔹 Görüntülenecek adım bileşeni
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <StepCategory
+            onSelect={(cat) => {
+              setSelectedCategory(cat);
+              nextStep();
+            }}
+          />
+        );
+      case 2:
+        return (
+          <StepSubCategory
+            category={selectedCategory}
+            onSelect={(sub) => {
+              setSelectedSubCategory(sub);
+              nextStep();
+            }}
+            onBack={prevStep}
+          />
+        );
+      case 3:
+        return (
+          <StepForm
+            category={selectedCategory}
+            subCategory={selectedSubCategory}
+            onBack={prevStep}
+          />
+        );
+      default:
+        return null;
     }
-  }
+  };
 
-  // Breadcrumb tıklamaları
-  function goToRoot() {
-    setStep(1);
-    setSelectedCategory(null);
-    setSelectedSubCategory(null);
-  }
-
-  function goToCategory() {
-    setStep(2);
-    setSelectedSubCategory(null);
-  }
-
+  // 🔹 JSX (görünüm)
   return (
-    <div className="mx-auto max-w-2xl p-4 sm:p-6">
-      {step >= 2 && (
-        <BreadcrumbPath
-          category={selectedCategory}
-          subCategory={selectedSubCategory}
-          onRoot={goToRoot}
-          onCategory={goToCategory}
-        />
+    <div className="min-h-[calc(100vh-88px)] bg-white p-4">
+      {/* 🌳 Eğer Hayat Ağacı'ndan kategori seçildiyse göster */}
+      {selectedCategoryTitle && (
+        <div className="p-3 bg-green-50 text-green-700 rounded-lg mb-4 shadow-sm border border-green-100">
+          Seçili kategori: <strong>{selectedCategoryTitle}</strong>
+        </div>
       )}
 
-      {step === 1 && <StepCategory onSelect={handleCategorySelect} />}
-      {step === 2 && (
-        <StepSubCategory
-          category={selectedCategory}
-          onBack={handleBack}
-          onSelect={handleSubCategorySelect}
-        />
-      )}
-      {step === 3 && (
-        <StepForm
-          category={selectedCategory}
-          subCategory={selectedSubCategory}
-          onBack={handleBack}
-        />
-      )}
+      {/* Üstte breadcrumb varsa */}
+      <BreadcrumbPath step={step} />
+
+      {/* Aktif adım */}
+      <div className="mt-4">{renderStep()}</div>
     </div>
   );
 }

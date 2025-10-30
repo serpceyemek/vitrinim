@@ -23,3 +23,4 @@ pnpm-debug.log*
 
 # Vercel yerel proje bilgisi
 .vercel/
+.vercel
