@@ -2,8 +2,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { ToastProvider } from "./components/toast/ToastContext";
-import App from "./App";
+import { ToastProvider } from "./components/toast/ToastContext.jsx";
+import App from "./App.jsx";
 import "./index.css";
 
 // Root'u bağla

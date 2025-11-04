@@ -1,0 +1,311 @@
+{
+  "emlak": {
+    "title": "emlak",
+    "children": [
+      {
+        "slug": "emlak/konut",
+        "title": "konut"
+      },
+      {
+        "slug": "emlak/işyeri",
+        "title": "işyeri"
+      },
+      {
+        "slug": "emlak/arsa",
+        "title": "arsa"
+      }
+    ]
+  },
+  "konut": {
+    "title": "konut",
+    "children": [
+      {
+        "slug": "konut/satılık",
+        "title": "satılık"
+      },
+      {
+        "slug": "konut/kiralık",
+        "title": "kiralık"
+      },
+      {
+        "slug": "konut/günlük-kiralık",
+        "title": "günlük-kiralık"
+      }
+    ]
+  },
+  "işyeri": {
+    "title": "işyeri",
+    "children": []
+  },
+  "arsa": {
+    "title": "arsa",
+    "children": []
+  },
+  "satılık": {
+    "title": "satılık",
+    "children": [
+      {
+        "slug": "satılık/daire",
+        "title": "daire"
+      },
+      {
+        "slug": "satılık/villa",
+        "title": "villa"
+      }
+    ]
+  },
+  "kiralık": {
+    "title": "kiralık",
+    "children": [
+      {
+        "slug": "kiralık/daire",
+        "title": "daire"
+      },
+      {
+        "slug": "kiralık/villa",
+        "title": "villa"
+      }
+    ]
+  },
+  "günlük-kiralık": {
+    "title": "günlük-kiralık",
+    "children": []
+  },
+  "daire": {
+    "title": "daire",
+    "children": []
+  },
+  "villa": {
+    "title": "villa",
+    "children": []
+  },
+  "vasita": {
+    "title": "vasita",
+    "children": [
+      {
+        "slug": "vasita/otomobil",
+        "title": "otomobil"
+      },
+      {
+        "slug": "vasita/motosiklet",
+        "title": "motosiklet"
+      },
+      {
+        "slug": "vasita/ticari",
+        "title": "ticari"
+      }
+    ]
+  },
+  "otomobil": {
+    "title": "otomobil",
+    "children": [
+      {
+        "slug": "otomobil/suv",
+        "title": "suv"
+      },
+      {
+        "slug": "otomobil/sedan",
+        "title": "sedan"
+      }
+    ]
+  },
+  "motosiklet": {
+    "title": "motosiklet",
+    "children": [
+      {
+        "slug": "motosiklet/scooter",
+        "title": "scooter"
+      },
+      {
+        "slug": "motosiklet/enduro",
+        "title": "enduro"
+      }
+    ]
+  },
+  "ticari": {
+    "title": "ticari",
+    "children": [
+      {
+        "slug": "ticari/kamyon",
+        "title": "kamyon"
+      },
+      {
+        "slug": "ticari/minibüs",
+        "title": "minibüs"
+      }
+    ]
+  },
+  "suv": {
+    "title": "suv",
+    "children": []
+  },
+  "sedan": {
+    "title": "sedan",
+    "children": []
+  },
+  "scooter": {
+    "title": "scooter",
+    "children": []
+  },
+  "enduro": {
+    "title": "enduro",
+    "children": []
+  },
+  "kamyon": {
+    "title": "kamyon",
+    "children": []
+  },
+  "minibüs": {
+    "title": "minibüs",
+    "children": []
+  },
+  "is-ilanlari": {
+    "title": "is-ilanlari",
+    "children": [
+      {
+        "slug": "is-ilanlari/muhendis",
+        "title": "muhendis"
+      },
+      {
+        "slug": "is-ilanlari/öğretmen",
+        "title": "öğretmen"
+      },
+      {
+        "slug": "is-ilanlari/satış-temsilcisi",
+        "title": "satış-temsilcisi"
+      },
+      {
+        "slug": "is-ilanlari/sekreter",
+        "title": "sekreter"
+      }
+    ]
+  },
+  "muhendis": {
+    "title": "muhendis",
+    "children": []
+  },
+  "öğretmen": {
+    "title": "öğretmen",
+    "children": []
+  },
+  "satış-temsilcisi": {
+    "title": "satış-temsilcisi",
+    "children": []
+  },
+  "sekreter": {
+    "title": "sekreter",
+    "children": []
+  },
+  "ozel-ders-verenler": {
+    "title": "ozel-ders-verenler",
+    "children": [
+      {
+        "slug": "ozel-ders-verenler/ilkokul",
+        "title": "ilkokul"
+      },
+      {
+        "slug": "ozel-ders-verenler/lise",
+        "title": "lise"
+      },
+      {
+        "slug": "ozel-ders-verenler/üniversite",
+        "title": "üniversite"
+      }
+    ]
+  },
+  "ilkokul": {
+    "title": "ilkokul",
+    "children": []
+  },
+  "lise": {
+    "title": "lise",
+    "children": []
+  },
+  "üniversite": {
+    "title": "üniversite",
+    "children": []
+  },
+  "hayvanlar-alemi": {
+    "title": "hayvanlar-alemi",
+    "children": [
+      {
+        "slug": "hayvanlar-alemi/evcil-hayvan",
+        "title": "evcil-hayvan"
+      }
+    ]
+  },
+  "evcil-hayvan": {
+    "title": "evcil-hayvan",
+    "children": [
+      {
+        "slug": "evcil-hayvan/kedi",
+        "title": "kedi"
+      },
+      {
+        "slug": "evcil-hayvan/köpek",
+        "title": "köpek"
+      },
+      {
+        "slug": "evcil-hayvan/kuş",
+        "title": "kuş"
+      },
+      {
+        "slug": "evcil-hayvan/balık",
+        "title": "balık"
+      },
+      {
+        "slug": "evcil-hayvan/tavşan",
+        "title": "tavşan"
+      }
+    ]
+  },
+  "kedi": {
+    "title": "kedi",
+    "children": []
+  },
+  "köpek": {
+    "title": "köpek",
+    "children": []
+  },
+  "kuş": {
+    "title": "kuş",
+    "children": []
+  },
+  "balık": {
+    "title": "balık",
+    "children": []
+  },
+  "tavşan": {
+    "title": "tavşan",
+    "children": []
+  },
+  "yardimci-arayanlar": {
+    "title": "yardimci-arayanlar",
+    "children": [
+      {
+        "slug": "yardimci-arayanlar/temizlik",
+        "title": "temizlik"
+      },
+      {
+        "slug": "yardimci-arayanlar/çocuk-bakımı",
+        "title": "çocuk-bakımı"
+      },
+      {
+        "slug": "yardimci-arayanlar/yaşlı-bakımı",
+        "title": "yaşlı-bakımı"
+      }
+    ]
+  },
+  "temizlik": {
+    "title": "temizlik",
+    "children": []
+  },
+  "çocuk-bakımı": {
+    "title": "çocuk-bakımı",
+    "children": []
+  },
+  "yaşlı-bakımı": {
+    "title": "yaşlı-bakımı",
+    "children": []
+  }
+}

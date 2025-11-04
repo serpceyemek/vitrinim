@@ -1,6 +1,7 @@
 {
   "name": "vitrinim",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "dependencies": {
     "history": "5.3.0",
@@ -16,6 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "generate:taxonomy": "node scripts/generate-Taxonomy.js",
     "build": "node scripts/inject-build-id.js && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

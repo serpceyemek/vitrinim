@@ -1,90 +1,110 @@
-import { useState } from "react";
-import { rootCategories } from "../data/categories";
-// Eğer verin postingTree.js'deyse yukarıyı yorum satırı yapıp şu satırı aç:
- // import { postingTree as rootCategories } from "../data/postingTree";
+// src/pages/Arama.jsx
+import React from "react";
+import { Search, Mic, ChevronRight } from "lucide-react";
+import { MAIN_CATEGORIES } from "../data/mainCategories";
+import BottomTabs from "../components/BottomTabs";
 
 export default function Arama() {
-  const [path, setPath] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Aktif kategori düğümünü bul
-  const currentNode = path.reduce(
-    (acc, key) => (acc && acc.children ? acc.children[key] : null),
-    rootCategories
-  );
-
-  const handleCategoryClick = (key) => {
-    if (currentNode && currentNode.children && currentNode.children[key]) {
-      setPath([...path, key]);
-      setSearchTerm("");
-    }
-  };
-
-  const handleBack = () => {
-    setPath(path.slice(0, -1));
-    setSearchTerm("");
-  };
-
-  const filtered = Object.entries(currentNode?.children || {}).filter(
-    ([k, v]) =>
-      k.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (v.title && v.title.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const anaKategoriler = MAIN_CATEGORIES;
 
   return (
-    <div className="min-h-[calc(100vh-88px)] flex flex-col items-center bg-white pt-6 pb-24 px-4">
-      {/* Başlık */}
-      <h2 className="text-lg font-semibold mb-4 text-center">Arama</h2>
-
-      <div className="w-full max-w-md">
-        {/* Arama kutusu */}
-        <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 shadow-sm mb-4">
-          <input
-            type="text"
-            placeholder="Kategori veya ilan adı ile ara..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-transparent outline-none text-sm"
-          />
-          <button
-            className="text-orange-500 ml-2 hover:text-orange-600 transition"
-            title="Sesli Arama"
-          >
-            🎤
-          </button>
-        </div>
-
-        {/* Geri / Ana Sayfa */}
-        {path.length > 0 && (
-          <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
-            <button onClick={handleBack} className="text-blue-600 font-medium">
-              ← Geri
-            </button>
-            <span>/</span>
-            <button onClick={() => setPath([])} className="text-blue-600 font-medium">
-              Ana Sayfa
-            </button>
-          </div>
-        )}
-
-        {/* Kategoriler */}
-        <div className="grid gap-2">
-          {filtered.length > 0 ? (
-            filtered.map(([key, value]) => (
-              <div
-                key={key}
-                onClick={() => handleCategoryClick(key)}
-                className="flex justify-between items-center bg-gray-100 hover:bg-gray-200 rounded-lg px-4 py-3 cursor-pointer transition"
-              >
-                <span className="text-gray-700 font-medium">{value.title}</span>
-                <span className="text-gray-400">›</span>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 mt-10">Alt kategori bulunamadı.</p>
-          )}
-        </div>
+    <div
+      style={{
+        padding: "20px 16px 90px", // Üst ve alt boşluklar
+        minHeight: "100vh",
+        backgroundColor: "#fff",
+      }}
+    >
+      {/* Arama Kutusu */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: "#f9fafb",
+          border: "1px solid #eee",
+          borderRadius: "8px",
+          padding: "10px 12px",
+          marginBottom: "20px",
+        }}
+      >
+        <Search size={20} color="#9ca3af" />
+        <input
+          type="text"
+          placeholder="Kategori veya ilan adı ile ara..."
+          style={{
+            flex: 1,
+            border: "none",
+            outline: "none",
+            background: "transparent",
+            paddingLeft: "8px",
+            fontSize: "15px",
+          }}
+        />
+        <Mic size={20} color="#9ca3af" />
       </div>
+
+      {/* Ana Kategoriler Başlığı */}
+      <h2
+        style={{
+          fontSize: "18px",
+          fontWeight: "600",
+          marginBottom: "12px",
+          color: "#111827",
+        }}
+      >
+        Ana Kategoriler
+      </h2>
+
+      {/* Ana Kategori Listesi */}
+      <ul
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          listStyle: "none",
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        {anaKategoriler.map((kategori, index) => (
+          <li
+            key={kategori.slug || index}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              background: "#fff",
+              border: "1px solid #eee",
+              borderRadius: "10px",
+              padding: "14px 12px",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: "500",
+                  color: "#111827",
+                }}
+              >
+                {kategori.name}
+              </span>
+            </div>
+            <ChevronRight size={18} color="#9ca3af" />
+          </li>
+        ))}
+      </ul>
+
+      {/* Alt Turuncu Navigasyon Bar */}
+      <BottomTabs />
     </div>
   );
 }

@@ -1,42 +1,30 @@
 // src/App.jsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-
-// SAYFALAR
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Arama from "./pages/Arama";
+import CategoryPage from "./pages/CategoryPage";
 import Magaza from "./pages/Magaza";
-import NewListing from "./pages/NewListing";
-import Onizleme from "./pages/Onizleme";
-import Profilim from "./pages/Profilim";
 import BanaOzel from "./pages/BanaOzel";
-import NotFound from "./pages/NotFound";
+import IlanVer from "./pages/NewListing";
+import Profil from "./pages/Profilim";
 
-// BİLEŞENLER
-import BottomTabs from "./components/BottomTabs";
-import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <Router>
       <Routes>
-        {/* Uygulama açılışı: Arama */}
-        <Route path="/" element={<Navigate to="/arama" replace />} />
+        {/* Ana sayfa */}
+        <Route path="/" element={<Arama />} />
 
-        {/* Sayfalar */}
-        <Route path="/arama" element={<Arama />} />
+        {/* Kategori sayfası */}
+        <Route path="/kategori/:slug" element={<CategoryPage />} />
+
+        {/* Diğer sayfalar */}
         <Route path="/magaza" element={<Magaza />} />
-        <Route path="/ilan-ver" element={<NewListing />} />
-        <Route path="/onizleme" element={<Onizleme />} />
-        <Route path="/profilim" element={<Profilim />} />
+        <Route path="/ilan-ver" element={<IlanVer />} />
         <Route path="/bana-ozel" element={<BanaOzel />} />
-
-        {/* Eski URL & 404 */}
-        <Route path="/index.html" element={<Navigate to="/" replace />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/giris" element={<Profil />} />
       </Routes>
-
-      <BottomTabs />
-      <Toaster position="bottom-center" />
-    </div>
+    </Router>
   );
 }

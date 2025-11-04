@@ -1,4 +1,4 @@
-// Alt bar – turuncu, ikon üstte yazı altta
+// src/components/BottomTabs.jsx
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Store, Search, Plus, Star, User } from "lucide-react";
@@ -8,13 +8,24 @@ export default function BottomTabs() {
   return (
     <nav className="bottom-nav">
       {/* Mağaza */}
-      <NavLink to="/magaza" className="tab">
+      <NavLink
+        to="/magaza"
+        className={({ isActive }) =>
+          `tab ${isActive ? "active" : ""}`
+        }
+      >
         <Store className="tab-icon" />
         <span className="tab-text">Mağaza</span>
       </NavLink>
 
       {/* Arama */}
-      <NavLink to="/arama" className="tab">
+      <NavLink
+        to="/"
+        end
+        className={({ isActive }) =>
+          `tab ${isActive ? "active" : ""}`
+        }
+      >
         <Search className="tab-icon" />
         <span className="tab-text">Arama</span>
       </NavLink>
@@ -28,13 +39,23 @@ export default function BottomTabs() {
       </NavLink>
 
       {/* Bana Özel */}
-      <NavLink to="/bana-ozel" className="tab">
+      <NavLink
+        to="/bana-ozel"
+        className={({ isActive }) =>
+          `tab ${isActive ? "active" : ""}`
+        }
+      >
         <Star className="tab-icon" />
         <span className="tab-text">Bana Özel</span>
       </NavLink>
 
       {/* Profil */}
-      <NavLink to="/giris" className="tab">
+      <NavLink
+        to="/giris"
+        className={({ isActive }) =>
+          `tab ${isActive ? "active" : ""}`
+        }
+      >
         <User className="tab-icon" />
         <span className="tab-text">Profilim</span>
       </NavLink>
